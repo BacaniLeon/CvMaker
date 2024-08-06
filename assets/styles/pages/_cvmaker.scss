@@ -1,0 +1,322 @@
+@import '../../../node_modules/include-media/dist/_include-media.scss';
+
+body{
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(yellow, purple);
+    font-family: sans-serif;
+    font-size: 16rem;
+
+    @include media("<=tablet"){
+       h1{
+        font-size: 50rem;
+       }
+    }
+}
+
+form{
+    width: 100%;
+    max-width: 800rem;
+    display: grid;
+    margin: auto;
+    gap: 10rem;
+    font-family: Arial, Helvetica, sans-serif;
+
+    @include media("<=tablet"){
+        width: 80%;
+        max-width: 400rem;
+    }
+}
+
+input{
+    height:50rem;
+    border-radius: 10rem;
+    border: none;
+    padding-left:20rem;
+    font-size: 20rem;
+
+    @include media("<=tablet"){
+        height: 25rem;
+        font-size: 12rem;
+    }
+}
+
+textarea{
+    max-width: 800rem;
+    height: 150rem;
+    border-radius: 10rem;
+    border: none;
+    font-size: 20rem;
+    padding-left: 20rem;
+
+    @include media("<=tablet"){
+        height: 80rem;
+        font-size: 12rem;
+    }
+}
+
+label{
+    font-size: 24rem;
+    font-weight: bold;
+
+    @include media("<=tablet"){
+        font-size: 12rem;
+    }
+}
+
+.previewCvButton{
+    margin: 50rem auto;
+    width: 100rem;
+    height: 50rem;
+
+    @include media("<=tablet"){
+        height: 30rem;
+        width: 50rem;
+    }
+}
+
+.button__Div{
+    display: grid;
+    width: 100%;
+    align-items: center;
+}
+
+
+.background__Div{
+    display: grid;
+    margin: 0 auto;
+}
+
+.mainCv__Div{
+    width: 1200rem;
+    margin: 0 auto 50rem ;
+
+    @include media("<=tablet"){
+        width: 100%;
+        max-width: 362rem;
+        margin: auto;
+    }
+}
+
+.resume__Wrapper{
+    display: grid;
+    justify-content: center;
+    @include media("<=tablet"){
+       display: grid;
+       justify-content: flex-start;
+    }
+    
+}
+
+.resume{
+    display: flex;
+    box-shadow: rgba(50,50,93,0.25) 0rem 13rem 27rem -5rem, rgba(0,0,0,0.3) 0rem 8rem 16rem -8rem; 
+    max-width: 210mm;
+    width: 100%;
+    .left-part{
+        background-color: var(--background-color-left);
+        color: var(--text-color-left);
+        border-right: 1rem solid var(--highlight-color-left);
+        width: 30%;
+        padding: 30rem;
+
+        .headliner{
+            border-bottom: 1rem solid var(--highlight-color-left);
+            padding: 0 10rem 5rem 0;
+            margin: 0 -30rem 5rem 0;
+
+        }
+        
+    }
+
+    .right-part{
+        background-color: var(--background-color-right);
+        color: var(--text-color-right);
+        width: 70%;
+        padding: 30rem;
+
+        .headliner{
+            color: var(--highlight-color-left);
+        }
+    }
+}
+
+.headliner{
+    font-size: 28rem;
+    font-weight: var(--headline-weight);
+    margin-bottom: 15rem;
+    margin-top: 0;
+
+    @include media("<=tablet"){
+        font-size: 16rem;
+    }
+}
+
+.resume-section{
+    margin-bottom: 30rem;
+    word-wrap: break-word;
+}
+
+.name{
+    font-weight: 300;
+    color: var(--highlight-color-right);
+    font-size: 28rem;
+    border-bottom: 1rem solid var(--highlight-color-right);
+    margin: 0 0 0 -30rem;
+    padding: 0 0 15rem 30rem;
+    word-wrap: break-word;
+}
+
+.title{
+    border-bottom: 1rem solid var(--highlight-color-right);
+    margin: 0 0 20rem -30rem;
+    padding: 15rem 0 15rem 30rem;
+    font-weight: 300;
+    font-size: 20rem;
+    word-wrap: break-word;
+}
+
+#idResume ul{
+    padding-inline-start: 16rem;
+    margin-block-end: 0rem;
+    margin-block-start: 5rem;
+}
+
+.profile-picture{
+    display: block;
+    max-width: 100%; 
+    height: auto; 
+    border: 5rem solid var(--highlight-color-left);
+    margin: 0 auto 20rem;
+    object-fit:contain;
+    object-position: center;
+}
+
+.fancyButton {
+    background: linear-gradient(45deg, #6a11cb, #2575fc);
+    width: 150rem;
+    border: none;
+    border-radius: 50rem;
+    color: white;
+    padding: 10rem 20rem;
+    font-size: 14rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 4rem 15rem rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+
+    @include media("<=tablet"){
+        width: 80rem;
+        font-size: 10rem;
+    }
+  }
+  
+  .fancyButton::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300%;
+    height: 300%;
+    background: rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+    border-radius: 50%;
+    transform: translate(-50%, -50%) scale(0.1);
+    z-index: -1;
+  }
+  
+  .fancyButton:hover::before {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  
+  .fancyButton:hover {
+    box-shadow: 0 6rem 20rem rgba(0, 0, 0, 0.3);
+    transform: translateY(-2rem);
+  }
+  
+  .fancyButton:active {
+    transform: translateY(2rem);
+    box-shadow: 0 3rem 10rem rgba(0, 0, 0, 0.2);
+  }
+
+  .fancyButton__Div{
+    display: flex;
+    gap: 50rem;
+    margin: 20rem auto;
+    
+  }
+
+  .input__Skills, .input__Certifications{ 
+    width: 80%;
+    margin: auto;
+  }
+
+  .div__Skills , .div__Certifications{
+    display: flex;
+    gap: 20rem;
+  }
+
+  .button {
+    width: 100rem;
+    height: 60rem;
+    background: linear-gradient(45deg, #6a11cb, #2575fc);
+    border: none;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16rem;
+    margin: 4rem 2rem;
+    cursor: pointer;
+    border-radius: 20rem;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+
+    @include media("<=tablet"){
+        height: 30rem;
+        width: 80rem;
+        font-size: 10rem;
+    }
+  }
+  
+  .button:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+  }
+  
+  .button:active {
+    background-color: #3e8e41;
+    transform: translateY(0);
+  }
+
+  .addButton{
+    width: 150rem;
+    height: 70rem;
+
+    @include media("<=tablet"){
+        height: 30rem;
+        width: 80rem;
+        font-size: 10rem;
+    }
+  }
+
+  .div__Experience, .div__Education{
+    display: grid;
+    gap: 20rem;
+    margin-bottom: 20rem;
+    word-wrap: break-word;
+  }
+
+  .mobile{
+    @include media("<=tablet"){
+        gap: 20rem;
+        display: block;
+    }
+  }
+
+  .div__Description{
+    word-break: break-all;
+  }
+
