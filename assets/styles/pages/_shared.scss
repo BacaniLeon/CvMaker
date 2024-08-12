@@ -19,7 +19,7 @@ h1,h2,h3,h4,h5,h6{
     margin: 0;
 }
 
-h5{
+h4{
     font-size: 24rem;
     font-weight: bolder;
     word-wrap: break-word;
@@ -29,8 +29,19 @@ h5{
     }
 }
 
+
+h5{
+    font-size: 22rem;
+    font-weight: bolder;
+    word-wrap: break-word;
+
+    @include media("<=tablet"){
+        font-size: 16rem;
+    }
+}
+
 h6{
-    font-size: 18rem;
+    font-size: 16rem;
     word-wrap: break-word;
     @include media("<=tablet"){
         font-size: 16rem;

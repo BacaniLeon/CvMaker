@@ -5,7 +5,7 @@ body{
     height: 100%;
     background: linear-gradient(yellow, purple);
     font-family: sans-serif;
-    font-size: 16rem;
+    font-size: 14rem;
 
     @include media("<=tablet"){
        h1{
@@ -304,9 +304,16 @@ label{
 
   .div__Experience, .div__Education{
     display: grid;
-    gap: 20rem;
+    gap: 10rem;
     margin-bottom: 20rem;
     word-wrap: break-word;
+    h5{ 
+        margin-bottom: 6rem;
+    }
+
+    h6{
+        margin-bottom: 12rem;
+    }
   }
 
   .mobile{
@@ -316,7 +323,4 @@ label{
     }
   }
 
-  .div__Description{
-    word-break: break-all;
-  }
 

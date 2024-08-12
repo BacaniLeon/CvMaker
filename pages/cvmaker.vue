@@ -41,6 +41,7 @@
       <label>Experience</label>
       <div v-for="(experience, index) in experiences" :key="index" class="div__Experience">
         <input type="text" v-model="experiences[index].title" placeholder="Job Title" />
+        <input type="text" v-model="experiences[index].company" placeholder="Company Name" />
         <input type="text" v-model="experiences[index].durationStart" placeholder="Start Date" />
         <input type="text" v-model="experiences[index].durationEnd" placeholder="End Date" />
         <textarea v-model="experiences[index].description" placeholder="Description" ></textarea>
@@ -90,14 +91,14 @@
               </ul>
             </div>
 
-            <div class="resume-section">
+            <div class="resume-section" v-if="skills.length && skills[0]">
               <h4 class="headliner">Skills</h4>
               <ul>
                 <li v-for="(skill, index) in skills" :key="index">{{ skill }}</li>
               </ul>
             </div>
 
-            <div class="resume-section">
+            <div class="resume-section" v-if="certifications.length && certifications[0]">
               <h4 class="headliner">Certifications</h4>
               <ul>
                 <li v-for="(certification, index) in certifications" :key="index">{{ certification }}</li>
@@ -109,18 +110,23 @@
             <div class="name">{{ fullName }}</div>
             <div class="title">{{ title }}</div>
 
-            <h4 class="headliner">Experience</h4>
-            <div v-for="(experience, index) in experiences" :key="index" class="div__Experience mobile">
-              <h5>{{ experience.title }} </h5>
-              <h6>{{ experience.durationStart }} - {{ experience.durationEnd }}</h6> 
-              <div>{{ experience.description }}</div>
+            <div v-if="hasValidEducation">
+              <h4 class="headliner">Education</h4>
+                <div v-for="(educationItem, index) in education" :key="index" class="div__Education mobile">
+                  <h5>{{ educationItem.school }} - {{ educationItem.degree }}</h5>
+                  <h6>{{ educationItem.durationStart }} - {{ educationItem.durationEnd }}</h6>
+                  <div>{{ educationItem.description }}</div>
+                </div>
             </div>
 
-            <h4 class="headliner">Education</h4>
-            <div v-for="(educationItem, index) in education" :key="index" class="div__Education mobile">
-              <h5>{{ educationItem.school }} - {{ educationItem.degree }}</h5>
-              <h6>{{ educationItem.durationStart }} - {{ educationItem.durationEnd }}</h6>
-              <div>{{ educationItem.description }}</div>
+            <div v-if="hasValidExperiences">
+              <h4 class="headliner">Experience</h4>
+                <div v-for="(experience, index) in experiences" :key="index" class="div__Experience mobile">
+                  <h4>{{ experience.title }} </h4>
+                  <h5>{{ experience.company }}</h5>
+                  <h6>{{ experience.durationStart }} - {{ experience.durationEnd }}</h6> 
+                  <div>{{ experience.description }}</div>
+                </div>
             </div>
           </div>
         </div>
@@ -141,7 +147,7 @@ const address = ref('');
 const description = ref('');
 const skills = ref(['']);
 const certifications = ref(['']);
-const experiences = ref([{ title: '', durationStart: '', durationEnd: '', description: '' }]);
+const experiences = ref([{ title: '', company: '', durationStart: '', durationEnd: '', description: '' }]);
 const education = ref([{ school: '', degree: '', durationStart: '', durationEnd: '', description: '' }]);
 const title = ref('');
 
@@ -213,7 +219,7 @@ const removeCertification = (index) => {
 };
 
 const addExperience = () => {
-  experiences.value.push({ title: '', durationStart: '', durationEnd: '', description: '' });
+  experiences.value.push({ title: '', company: '', durationStart: '', durationEnd: '', description: '' });
 };
 
 const removeExperience = (index) => {
@@ -233,6 +239,19 @@ const handleBeforeUnload = (event) => {
   event.returnValue = '';
 };
 
+const hasValidExperiences = computed(() => {
+  return experiences.value.some(exp =>
+    exp.title || exp.company || exp.durationStart || exp.durationEnd || exp.description
+  );
+});
+
+const hasValidEducation = computed(() => {
+  return education.value.some(exp =>
+    exp.school || exp.degree || exp.durationStart || exp.durationEnd || exp.description
+  );
+});
+
+
 onMounted(() => {
   window.addEventListener('beforeunload', handleBeforeUnload);
 });
@@ -241,4 +260,3 @@ onBeforeUnmount(() => {
   window.removeEventListener('beforeunload', handleBeforeUnload);
 });
 </script>
-
