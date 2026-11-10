@@ -4,7 +4,7 @@
       <NuxtLink to="/" class="logo"><span class="logo__mark">CV</span>CV Maker</NuxtLink>
       <nav class="home__links">
         <a href="#import" class="btn btn--ghost home__link-hide">Import a CV</a>
-        <a href="#features" class="btn btn--ghost home__link-hide">Features</a>
+        <a href="#templates" class="btn btn--ghost home__link-hide">Templates</a>
         <NuxtLink to="/cvmaker" class="btn btn--dark btn--sm">Open editor</NuxtLink>
       </nav>
     </header>
@@ -14,8 +14,8 @@
         <p class="hero__eyebrow"><span class="hero__pulse" />Free · no sign-up · stays in your browser</p>
         <h1 class="hero__title">Build a CV that<br />gets <em>read.</em></h1>
         <p class="hero__lead">
-          Start fresh, or upload the CV you already have and pick up right where you left off. Live preview, three
-          templates, one-click PDF.
+          Start fresh, import your LinkedIn profile, or upload the CV you already have and pick up right where you left
+          off. Live preview, {{ cvTemplates.length }} templates, one-click PDF.
         </p>
         <div class="hero__ctas">
           <button type="button" class="btn btn--primary btn--lg" @click="createNew">
@@ -29,6 +29,10 @@
             Continue {{ draft.personal.fullName ? `“${firstName}”` : 'your draft' }}
           </NuxtLink>
         </div>
+        <button type="button" class="hero__linkedin" @click="linkedinOpen = true">
+          <AppIcon name="linkedin" :size="16" /> Or build it from your <strong>LinkedIn profile</strong>
+          <AppIcon name="arrow" :size="14" />
+        </button>
         <p v-if="draft" class="hero__note">Draft saved in this browser · {{ draftAge }}</p>
       </div>
 
@@ -62,6 +66,13 @@
           </li>
           <li>
             <span class="import__tick"><AppIcon name="check" :size="14" :stroke="2.6" /></span>
+            <div>
+              <strong>LinkedIn profile</strong> — drop its PDF or data export.
+              <button type="button" class="import__how" @click="linkedinOpen = true">Show me how</button>
+            </div>
+          </li>
+          <li>
+            <span class="import__tick"><AppIcon name="check" :size="14" :stroke="2.6" /></span>
             <div><strong>Your file never leaves your device.</strong> Everything happens in the browser.</div>
           </li>
         </ul>
@@ -69,6 +80,15 @@
       <div class="import__zone">
         <ImportDropzone @imported="onImported" />
       </div>
+    </section>
+
+    <section id="templates" class="showcase">
+      <div class="showcase__head">
+        <p class="section-eyebrow">{{ cvTemplates.length }} templates</p>
+        <h2 class="section-title">Pick a look. <em>Switch any time.</em></h2>
+        <p class="showcase__lead">Modern, professional, creative or ATS-friendly — every template works with any colour, and your content moves with you.</p>
+      </div>
+      <TemplateGallery :cv="sample" @select="startWithTemplate" />
     </section>
 
     <section id="features" class="features">
@@ -97,18 +117,21 @@
       </div>
     </Transition>
 
+    <ImportModal :open="linkedinOpen" initial-view="linkedin" @close="linkedinOpen = false" @imported="onLinkedInImported" />
+
     <AppToasts />
   </div>
 </template>
 
 <script setup>
-const { startFresh } = useCv()
+const { cv, startFresh, hydrate, persist } = useCv()
 const { applyImport } = useCvImport()
 
 const sample = normalizeCv(sampleCvData)
 const sampleClassic = normalizeCv({ ...sampleCvData, meta: { ...sampleCvData.meta, template: 'minimal', accent: '#0F766E' } })
 
 const draft = ref(null)
+const linkedinOpen = ref(false)
 const confirm = ref(null)
 const year = new Date().getFullYear()
 
@@ -156,10 +179,24 @@ function onImported(result) {
   }
 }
 
+function onLinkedInImported(result) {
+  linkedinOpen.value = false
+  onImported(result)
+}
+
+// Start (or continue) with the chosen template.
+function startWithTemplate(id) {
+  if (draft.value) hydrate()
+  else startFresh()
+  cv.value.meta.template = id
+  persist()
+  navigateTo('/cvmaker')
+}
+
 const features = [
   { icon: 'eye', title: 'Live preview', text: 'See every keystroke on a real A4 page, with page breaks shown as you go.' },
-  { icon: 'layout', title: 'Three templates', text: 'Modern, Classic and Minimal — switch any time without losing a word.' },
-  { icon: 'refresh', title: 'Re-editable PDFs', text: 'Your PDF carries its own data. Upload it later and keep editing.' },
+  { icon: 'layout', title: `${cvTemplates.length} templates`, text: 'Professional, creative and ATS-friendly designs in any colour.' },
+  { icon: 'linkedin', title: 'From LinkedIn', text: 'Turn your LinkedIn profile into a CV in about a minute.' },
   { icon: 'lock', title: 'Private by default', text: 'No account, no server. Drafts autosave in your browser only.' }
 ]
 </script>

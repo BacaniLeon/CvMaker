@@ -12,7 +12,7 @@
       </div>
 
       <div class="editor__actions">
-        <button type="button" class="btn btn--ghost" title="Import a CV (PDF, DOCX or JSON)" @click="importOpen = true">
+        <button type="button" class="btn btn--ghost" title="Import a CV (PDF, DOCX or JSON)" @click="openImport('file')">
           <AppIcon name="upload" :size="17" /><span class="editor__btn-label">Import</span>
         </button>
         <button type="button" class="btn btn--ghost" title="Download an editable .json backup" @click="exportJson(cv)">
@@ -42,6 +42,23 @@
             <span class="meter__value">{{ completeness }}%</span>
           </div>
         </div>
+
+        <Transition name="modal">
+          <div v-if="isEmpty" class="quickstart">
+            <div>
+              <p class="quickstart__title">Don't start from a blank page</p>
+              <p class="quickstart__text">Fill everything in from your LinkedIn profile or a CV you already have.</p>
+            </div>
+            <div class="quickstart__actions">
+              <button type="button" class="btn btn--primary btn--sm" @click="openImport('linkedin')">
+                <AppIcon name="linkedin" :size="15" /> From LinkedIn
+              </button>
+              <button type="button" class="btn btn--outline btn--sm" @click="openImport('file')">
+                <AppIcon name="upload" :size="15" /> Upload a CV
+              </button>
+            </div>
+          </div>
+        </Transition>
 
         <EditorSection title="Personal details" subtitle="Name, title and how to reach you" icon="user" default-open>
           <div class="photo">
@@ -175,18 +192,17 @@
       <!-- ============ PREVIEW ============ -->
       <div class="editor__preview">
         <div class="toolbar">
-          <div class="segmented" role="radiogroup" aria-label="Template">
-            <button
-              v-for="tpl in cvTemplates"
-              :key="tpl.id"
-              type="button"
-              role="radio"
-              :aria-checked="cv.meta.template === tpl.id"
-              :class="{ 'is-active': cv.meta.template === tpl.id }"
-              :title="tpl.hint"
-              @click="cv.meta.template = tpl.id"
-            >
-              {{ tpl.name }}
+          <div class="tplpick">
+            <button type="button" class="tplpick__step" aria-label="Previous template" @click="stepTemplate(-1)">
+              <AppIcon name="back" :size="15" />
+            </button>
+            <button type="button" class="tplpick__main" title="Browse all templates" @click="galleryOpen = true">
+              <AppIcon name="layout" :size="15" />
+              <span>{{ currentTemplate.name }}</span>
+              <span class="tplpick__count">{{ templateIndex + 1 }}/{{ cvTemplates.length }}</span>
+            </button>
+            <button type="button" class="tplpick__step" aria-label="Next template" @click="stepTemplate(1)">
+              <AppIcon name="arrow" :size="15" />
             </button>
           </div>
 
@@ -242,28 +258,35 @@
       </button>
     </nav>
 
-    <!-- Import modal -->
+    <!-- Template gallery -->
     <Transition name="modal">
-      <div v-if="importOpen" class="modal" @click.self="importOpen = false">
-        <div class="modal__card" role="dialog" aria-modal="true" aria-labelledby="import-title">
-          <button type="button" class="btn btn--icon modal__close" aria-label="Close" @click="importOpen = false">
+      <div v-if="galleryOpen" class="modal" @click.self="galleryOpen = false">
+        <div class="modal__card modal__card--gallery" role="dialog" aria-modal="true" aria-labelledby="gallery-title">
+          <button type="button" class="btn btn--icon modal__close" aria-label="Close" @click="galleryOpen = false">
             <AppIcon name="x" :size="18" />
           </button>
-          <template v-if="!pendingImport">
-            <h2 id="import-title" class="modal__title">Import a CV</h2>
-            <p class="modal__text">Continue from a CV you already have. Your current CV is replaced, so download a backup first if you want to keep it.</p>
-            <ImportDropzone title="Drop your CV here" @imported="onImported" />
-          </template>
-          <template v-else>
-            <h2 id="import-title" class="modal__title">Replace your current CV?</h2>
-            <p class="modal__text">
-              “{{ pendingImport.fileName }}” will replace what's in the editor now. This can't be undone unless you have a backup.
-            </p>
-            <div class="modal__actions">
-              <button type="button" class="btn btn--ghost" @click="exportJson(cv)">Download backup first</button>
-              <button type="button" class="btn btn--primary" @click="confirmImport">Replace</button>
-            </div>
-          </template>
+          <h2 id="gallery-title" class="modal__title">Choose a template</h2>
+          <p class="modal__text">Previews use your own content. Switch any time — nothing you've written is lost.</p>
+          <TemplateGallery :cv="cv" :selected="cv.meta.template" @select="pickTemplate" />
+        </div>
+      </div>
+    </Transition>
+
+    <!-- Import (file or LinkedIn) -->
+    <ImportModal :open="importOpen" :initial-view="importView" @close="importOpen = false" @imported="onImported" />
+
+    <!-- Confirm replacing a non-empty CV -->
+    <Transition name="modal">
+      <div v-if="pendingImport" class="modal" @click.self="pendingImport = null">
+        <div class="modal__card" role="alertdialog" aria-modal="true" aria-labelledby="replace-title">
+          <h2 id="replace-title" class="modal__title">Replace your current CV?</h2>
+          <p class="modal__text">
+            “{{ pendingImport.fileName }}” will replace what's in the editor now. This can't be undone unless you have a backup.
+          </p>
+          <div class="modal__actions">
+            <button type="button" class="btn btn--ghost" @click="exportJson(cv)">Download backup first</button>
+            <button type="button" class="btn btn--primary" @click="confirmImport">Replace</button>
+          </div>
         </div>
       </div>
     </Transition>
@@ -295,7 +318,21 @@ const { toast } = useToast()
 
 hydrate()
 
-const languageLevels = ['Native', 'Fluent', 'C2', 'C1', 'B2', 'B1', 'A2', 'A1', 'Basic']
+const isEmpty = computed(() => isCvEmpty(cv.value))
+
+/* ---------- templates */
+const galleryOpen = ref(false)
+const templateIndex = computed(() => Math.max(0, cvTemplates.findIndex((t) => t.id === cv.value.meta.template)))
+const currentTemplate = computed(() => cvTemplates[templateIndex.value])
+function stepTemplate(dir) {
+  const n = cvTemplates.length
+  cv.value.meta.template = cvTemplates[(templateIndex.value + dir + n) % n].id
+}
+function pickTemplate(id) {
+  cv.value.meta.template = id
+  galleryOpen.value = false
+}
+const languageLevels =['Native', 'Fluent', 'C2', 'C1', 'B2', 'B1', 'A2', 'A1', 'Basic']
 const isPresetAccent = computed(() => cvAccents.some((c) => c.toLowerCase() === cv.value.meta.accent.toLowerCase()))
 
 /* ---------- autosave */
@@ -377,26 +414,24 @@ function showPreview() {
 
 /* ---------- import */
 const importOpen = ref(false)
+const importView = ref('file')
 const pendingImport = ref(null)
 
+function openImport(view = 'file') {
+  importView.value = view
+  importOpen.value = true
+}
+
 function onImported(result) {
-  if (isCvEmpty(cv.value)) {
-    applyImport(result)
-    importOpen.value = false
-  } else {
-    pendingImport.value = result
-  }
+  importOpen.value = false
+  if (isCvEmpty(cv.value)) applyImport(result)
+  else pendingImport.value = result
 }
 
 function confirmImport() {
   applyImport(pendingImport.value)
   pendingImport.value = null
-  importOpen.value = false
 }
-
-watch(importOpen, (open) => {
-  if (!open) pendingImport.value = null
-})
 
 /* ---------- export */
 const exporting = ref(false)
@@ -446,6 +481,8 @@ function onKey(e) {
   if (e.key === 'Escape') {
     importOpen.value = false
     resetOpen.value = false
+    pendingImport.value = null
+    galleryOpen.value = false
   }
 }
 

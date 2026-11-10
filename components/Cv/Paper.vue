@@ -9,14 +9,16 @@
 </template>
 
 <script setup>
-import CvTemplateModern from './TemplateModern.vue'
-import CvTemplateClassic from './TemplateClassic.vue'
-import CvTemplateMinimal from './TemplateMinimal.vue'
-
 const props = defineProps({ cv: { type: Object, required: true } })
 const emit = defineEmits(['pages'])
 
-const templates = { modern: CvTemplateModern, classic: CvTemplateClassic, minimal: CvTemplateMinimal }
+// TemplateExecutive.vue -> "executive"
+const templates = Object.fromEntries(
+  Object.entries(import.meta.glob('./Template*.vue', { eager: true, import: 'default' })).map(([path, comp]) => [
+    path.match(/Template(\w+)\.vue$/)[1].toLowerCase(),
+    comp
+  ])
+)
 const view = computed(() => buildCvView(props.cv))
 const root = ref(null)
 const pages = ref(1)

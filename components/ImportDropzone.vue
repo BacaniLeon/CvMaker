@@ -19,10 +19,8 @@
       <AppIcon v-else name="upload" :size="22" />
     </div>
     <p class="dropzone__title">{{ busy ? 'Reading your CV…' : title }}</p>
-    <p class="dropzone__text">
-      Drag &amp; drop or click to choose. PDFs made with CV Maker restore every field, photo and style exactly.
-    </p>
-    <div class="dropzone__types"><span>PDF</span><span>DOCX</span><span>JSON</span></div>
+    <p class="dropzone__text">{{ text }}</p>
+    <div class="dropzone__types"><span v-for="t in types" :key="t">{{ t }}</span></div>
     <p v-if="error" class="dropzone__error" @click.stop>
       <AppIcon name="alert" :size="15" />
       <span>{{ error }}</span>
@@ -32,7 +30,12 @@
 
 <script setup>
 defineProps({
-  title: { type: String, default: 'Upload your existing CV' }
+  title: { type: String, default: 'Upload your existing CV' },
+  text: {
+    type: String,
+    default: 'Drag & drop or click to choose. PDFs made with CV Maker restore every field, photo and style exactly.'
+  },
+  types: { type: Array, default: () => ['PDF', 'DOCX', 'JSON', 'LinkedIn'] }
 })
 const emit = defineEmits(['imported'])
 
@@ -64,8 +67,10 @@ function onPick(e) {
 async function handle(file) {
   if (busy.value) return
   error.value = ''
-  if (file.size > 15 * 1024 * 1024) {
-    error.value = 'That file is over 15 MB. Please upload a smaller file.'
+  // LinkedIn archives can be large (only the CSVs inside are read).
+  const limit = /\.zip$/i.test(file.name) ? 200 : 25
+  if (file.size > limit * 1024 * 1024) {
+    error.value = `That file is over ${limit} MB. Please upload a smaller file.`
     return
   }
   busy.value = true
