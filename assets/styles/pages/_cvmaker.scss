@@ -846,3 +846,84 @@ $bar-height: 60rem;
     color: var(--muted);
   }
 }
+
+// ---------- empty-editor quick start
+
+.quickstart {
+  display: flex;
+  flex-direction: column;
+  gap: 12rem;
+  padding: 16rem 18rem;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, var(--brand-soft), #f3f0ff);
+  border: 1rem solid rgba(57, 67, 183, 0.18);
+
+  &__title {
+    font-size: 15rem;
+    font-weight: 650;
+    color: var(--brand-ink);
+  }
+  &__text {
+    margin-top: 2rem;
+    font-size: 13rem;
+    color: var(--ink-2);
+  }
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8rem;
+  }
+}
+
+// ---------- template picker in the preview toolbar
+
+.tplpick {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  padding: 3rem;
+  border-radius: 10rem;
+  background: rgba(20, 20, 30, 0.06);
+
+  &__step,
+  &__main {
+    display: inline-flex;
+    align-items: center;
+    gap: 7rem;
+    height: 30rem;
+    border: 0;
+    border-radius: 7rem;
+    background: transparent;
+    color: var(--ink-2);
+    font-size: 13rem;
+    font-weight: 600;
+    transition: background-color 0.15s ease, color 0.15s ease;
+  }
+  &__step {
+    justify-content: center;
+    width: 30rem;
+    color: var(--muted);
+    @media (hover: hover) {
+      &:hover {
+        background: var(--surface);
+        color: var(--ink);
+      }
+    }
+  }
+  &__main {
+    padding: 0 12rem;
+    background: var(--surface);
+    box-shadow: 0 1rem 3rem rgba(20, 20, 30, 0.12);
+    color: var(--ink);
+    @media (hover: hover) {
+      &:hover {
+        color: var(--brand);
+      }
+    }
+  }
+  &__count {
+    font-size: 11rem;
+    font-weight: 500;
+    color: var(--muted);
+  }
+}

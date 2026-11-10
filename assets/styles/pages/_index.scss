@@ -420,3 +420,66 @@
     transform: rotate(5deg) translateY(8rem);
   }
 }
+
+// ---------- LinkedIn entry + template showcase
+
+.hero__linkedin {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rem;
+  margin-top: 18rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 14rem;
+  color: var(--ink-2);
+  animation: rise 0.8s 0.24s var(--ease-out) both;
+
+  strong {
+    font-weight: 600;
+    color: var(--brand);
+  }
+  .icon:last-child {
+    transition: transform 0.2s var(--ease-out);
+  }
+  @media (hover: hover) {
+    &:hover .icon:last-child {
+      transform: translateX(3rem);
+    }
+  }
+}
+
+.import__how {
+  margin-left: 4rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--brand);
+  font-size: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.showcase {
+  max-width: 1240rem;
+  margin: 0 auto 90rem;
+  padding: 0 40rem;
+  scroll-margin-top: 30rem;
+
+  @include media('<=tablet') {
+    padding: 0 16rem;
+    margin-bottom: 60rem;
+  }
+
+  &__head {
+    max-width: 640rem;
+    margin-bottom: 28rem;
+  }
+
+  &__lead {
+    margin-top: 14rem;
+    font-size: 16rem;
+    color: var(--ink-2);
+  }
+}
