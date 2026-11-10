@@ -1,22 +1,24 @@
 @use 'sass:map';
+@import '../../node_modules/include-media/dist/_include-media.scss';
+@import '../styles/pages/_base.scss';
 @import '../styles/pages/_shared.scss';
 @import '../styles/pages/_index.scss';
 @import '../styles/pages/_cvmaker.scss';
-@import '../../node_modules/include-media/dist/_include-media.scss';
-
-body {
-  background-color:darkgrey;
-  margin: 0;
-}
 
 // Korisiti brojeve bez px, %, itd.
 $designViewportWidths: (
   mobile: 375,
+  tablet: 1024,
   largeDesktop: 1440
 );
 
 html {
   font-size: calc(100vw / #{map.get($designViewportWidths, 'largeDesktop')});
+
+  // Small laptops / tablets in landscape: keep the UI readable.
+  @include media('>tablet', '<=desktop') {
+    font-size: calc(100vw / #{map.get($designViewportWidths, 'tablet')});
+  }
   @include media('<=tablet') {
     font-size: calc(100vw / #{map.get($designViewportWidths, 'mobile')});
   }
