@@ -1,4 +1,5 @@
-// Helpers shared by the three CV templates.
+// Helpers shared by the CV templates.
+import { cvFonts, DEFAULT_CV_FONT } from '~/utils/cvFonts'
 
 export const CV_PAGE = { width: 794, height: 1123 } // A4 at 96 dpi
 
@@ -44,12 +45,6 @@ export const cvTemplateCategories = [
   { id: 'minimal', name: 'Minimal' },
   { id: 'ats', name: 'ATS-friendly' }
 ]
-
-export const cvFonts = {
-  sans: { name: 'Inter', stack: "'Inter', 'Helvetica Neue', Arial, sans-serif" },
-  serif: { name: 'Lora', stack: "'Lora', Georgia, 'Times New Roman', serif" },
-  grotesk: { name: 'Manrope', stack: "'Manrope', 'Helvetica Neue', Arial, sans-serif" }
-}
 
 export const cvAccents = ['#3943B7', '#0F766E', '#B42318', '#C2410C', '#7C3AED', '#1F2937', '#0369A1', '#A16207']
 
@@ -100,7 +95,7 @@ export function buildCvView(cv) {
     accentDark: shadeHex(cv.meta.accent, -0.35),
     accentLight: shadeHex(cv.meta.accent, 0.35),
     initials: (p.fullName || 'Your Name').split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join(''),
-    font: (cvFonts[cv.meta.font] || cvFonts.sans).stack,
+    font: (cvFonts[cv.meta.font] || cvFonts[DEFAULT_CV_FONT]).stack,
     summary: cv.summary.trim(),
     contact: [
       p.email && { icon: 'mail', text: p.email },

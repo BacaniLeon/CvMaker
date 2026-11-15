@@ -1,5 +1,6 @@
 // PDF / JSON export. Every exported PDF carries the editable CV data as an embedded
 // file attachment, so uploading that PDF later restores the CV exactly.
+import { loadCvFont } from '~/utils/cvFonts'
 
 export const EMBEDDED_FILENAME = 'cvmaker-data.json'
 
@@ -25,6 +26,7 @@ export function exportJson(cv) {
 export async function exportPdf(element, liveCv) {
   // Snapshot now: rendering takes a few seconds and the user may keep typing meanwhile.
   const cv = JSON.parse(JSON.stringify(liveCv))
+  await loadCvFont(cv.meta.font)
   if (document.fonts?.ready) await document.fonts.ready
 
   const html2pdf = (await import('html2pdf.js')).default

@@ -224,9 +224,7 @@
           </div>
 
           <div class="toolbar__group">
-            <select v-model="cv.meta.font" class="toolbar__select" aria-label="Font">
-              <option v-for="(f, key) in cvFonts" :key="key" :value="key">{{ f.name }}</option>
-            </select>
+            <FontPicker v-model="cv.meta.font" />
             <div class="segmented segmented--sm" role="radiogroup" aria-label="CV language">
               <button type="button" :class="{ 'is-active': cv.meta.language === 'en' }" @click="cv.meta.language = 'en'">EN</button>
               <button type="button" :class="{ 'is-active': cv.meta.language === 'hr' }" @click="cv.meta.language = 'hr'">HR</button>

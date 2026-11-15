@@ -1,5 +1,6 @@
 // Central CV state: one reactive object shared by every page, autosaved to localStorage.
 import { cvTemplates } from '~/utils/cvView'
+import { cvFonts, DEFAULT_CV_FONT } from '~/utils/cvFonts'
 
 export const DRAFT_STORAGE_KEY = 'cvmaker:draft:v2'
 const STORAGE_KEY = DRAFT_STORAGE_KEY
@@ -47,7 +48,7 @@ export function normalizeCv(raw) {
 
   const meta = { ...base.meta, ...(raw.meta || {}) }
   if (!cvTemplates.some((t) => t.id === meta.template)) meta.template = 'modern'
-  if (!['sans', 'serif', 'grotesk'].includes(meta.font)) meta.font = 'sans'
+  if (!cvFonts[meta.font]) meta.font = DEFAULT_CV_FONT
   if (!['en', 'hr'].includes(meta.language)) meta.language = 'en'
   if (!/^#[0-9a-f]{6}$/i.test(meta.accent)) meta.accent = base.meta.accent
 

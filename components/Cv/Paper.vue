@@ -37,8 +37,11 @@ function measure() {
 }
 
 watch(() => props.cv, () => nextTick(measure), { deep: true })
+// Fonts other than the default few are downloaded on first use; re-measure once they arrive (line breaks change).
+watch(() => props.cv.meta.font, (key) => loadCvFont(key).then(() => nextTick(measure)))
 onMounted(() => {
   measure()
+  loadCvFont(props.cv.meta.font).then(measure)
   document.fonts?.ready.then(measure)
 })
 
