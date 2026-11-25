@@ -84,7 +84,29 @@
             </label>
             <label class="field">
               <span class="field__label">Professional title</span>
-              <input v-model="cv.personal.title" class="input" placeholder="Frontend Developer" />
+              <input
+                ref="titleBox"
+                v-model="cv.personal.title"
+                class="input"
+                placeholder="Frontend Developer, Librarian, Teacher…"
+                role="combobox"
+                aria-autocomplete="list"
+                :aria-expanded="titleSuggest.open.value && titleSuggest.items.value.length > 0"
+                autocomplete="off"
+                @focus="onTitleFocus"
+                @input="titleSuggest.open.value = true"
+                @blur="titleSuggest.open.value = false"
+                @keydown="titleSuggest.onKeydown"
+              />
+              <EditorSuggestMenu
+                :anchor="titleBox"
+                :open="titleSuggest.open.value"
+                :items="titleSuggest.items.value"
+                :active="titleSuggest.active.value"
+                :query="cv.personal.title"
+                @hover="titleSuggest.active.value = $event"
+                @pick="titleSuggest.pick"
+              />
             </label>
             <label class="field">
               <span class="field__label">Email</span>
@@ -360,8 +382,28 @@ const cvLang = computed(() => (cv.value.meta.language === 'hr' ? 'hr' : 'en'))
 const typeOptions = computed(() => experienceTypes.map((t) => ({ value: t.id, label: t[cvLang.value] })))
 const levelOptions = computed(() => educationLevels.map((l) => ({ value: l.id, label: l[cvLang.value] })))
 
-const skillSource = (q) =>
-  searchSkills(q, { lang: cvLang.value, exclude: cv.value.skills, languagesOnCv: cv.value.languages.map((l) => l.name) })
+// Curated names first; ESCO (thousands of skills across every field) fills in the rest.
+const skillSource = (q) => {
+  const curated = searchSkills(q, { lang: cvLang.value, exclude: cv.value.skills, languagesOnCv: cv.value.languages.map((l) => l.name) })
+  const taken = new Set(curated.map((c) => fold(c.value)))
+  const extra = searchEscoSkills(q, { lang: cvLang.value, exclude: cv.value.skills, limit: 8 - Math.min(curated.length, 5) })
+    .filter((x) => !taken.has(fold(x.value)))
+  return [...curated.slice(0, 5), ...extra, ...curated.slice(5)].slice(0, 8)
+}
+
+// Professional title: autocomplete from ESCO occupations ("knjižničar/knjižničarka" -> two choices).
+const titleBox = ref(null)
+const titleSuggest = useSuggest(
+  () => searchOccupations(cv.value.personal.title, { lang: cvLang.value, limit: 7, split: true }),
+  (item) => {
+    cv.value.personal.title = item.value
+    titleSuggest.open.value = false
+  }
+)
+function onTitleFocus() {
+  loadEsco()
+  titleSuggest.open.value = !!cv.value.personal.title
+}
 
 // Typing a language in Skills ("ger" -> German) puts it where it belongs.
 function addLanguageFromSkills(name) {
