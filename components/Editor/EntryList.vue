@@ -30,11 +30,22 @@
             <div class="entry__body grid">
               <label class="field">
                 <span class="field__label">{{ primary.label }}</span>
-                <input v-model="item[primary.key]" class="input" :placeholder="primary.placeholder" />
+                <input v-model="item[primary.key]" class="input" :placeholder="primary.placeholder" @blur="guessKind(item)" />
               </label>
               <label class="field">
                 <span class="field__label">{{ secondary.label }}</span>
-                <input v-model="item[secondary.key]" class="input" :placeholder="secondary.placeholder" />
+                <input v-model="item[secondary.key]" class="input" :placeholder="secondary.placeholder" @blur="guessKind(item)" />
+              </label>
+              <label v-if="kind" class="field">
+                <span class="field__label">{{ kind.label }}</span>
+                <select v-model="item[kind.key]" class="input" :class="{ 'is-empty': !item[kind.key] }">
+                  <option value="">{{ kind.placeholder || 'Select…' }}</option>
+                  <option v-for="o in kind.options" :key="o.value" :value="o.value">{{ o.label }}</option>
+                </select>
+              </label>
+              <label class="field">
+                <span class="field__label">Location</span>
+                <input v-model="item.location" class="input" placeholder="City, country" />
               </label>
               <label class="field">
                 <span class="field__label">Start</span>
@@ -44,11 +55,7 @@
                 <span class="field__label">End</span>
                 <input v-model="item.end" class="input" :disabled="item.current" :placeholder="item.current ? 'Present' : 'e.g. 06/2024'" />
               </label>
-              <label class="field">
-                <span class="field__label">Location</span>
-                <input v-model="item.location" class="input" placeholder="City, country" />
-              </label>
-              <div class="field entry__current">
+              <div class="field field--full entry__current">
                 <label class="checkbox"><input v-model="item.current" type="checkbox" /> {{ currentLabel }}</label>
               </div>
               <label class="field field--full">
@@ -75,7 +82,9 @@ const props = defineProps({
   primary: { type: Object, required: true },
   secondary: { type: Object, required: true },
   currentLabel: { type: String, default: 'I currently work here' },
-  descPlaceholder: { type: String, default: '' }
+  descPlaceholder: { type: String, default: '' },
+  // Optional dropdown: { key, label, placeholder, options: [{ value, label }], infer: (item) => value }
+  kind: { type: Object, default: null }
 })
 
 const { cv, addItem, removeItem, moveItem } = useCv()
@@ -90,9 +99,17 @@ function add() {
   openId.value = item.id
 }
 
+// Pre-fill the dropdown from what was typed ("Intern" -> Internship, "Gimnazija" -> Gymnasium) if it's still empty.
+function guessKind(item) {
+  if (!props.kind?.infer || item[props.kind.key]) return
+  const guess = props.kind.infer(item)
+  if (guess) item[props.kind.key] = guess
+}
+
 function metaLine(item) {
   const end = item.current ? 'Present' : item.end
   const dates = [item.start, end].filter(Boolean).join(' – ')
-  return [item[props.secondary.key], dates].filter(Boolean).join(' · ') || 'Click to fill in'
+  const kindLabel = props.kind && props.kind.options.find((o) => o.value === item[props.kind.key])?.label
+  return [item[props.secondary.key], kindLabel, dates].filter(Boolean).join(' · ') || 'Click to fill in'
 }
 </script>

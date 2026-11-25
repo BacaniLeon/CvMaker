@@ -1,5 +1,6 @@
 // Helpers shared by the CV templates.
 import { cvFonts, DEFAULT_CV_FONT } from '~/utils/cvFonts'
+import { experienceTypes, educationLevels, optionLabel } from '~/utils/cvSuggest'
 
 export const CV_PAGE = { width: 794, height: 1123 } // A4 at 96 dpi
 
@@ -65,7 +66,7 @@ export function shadeHex(hex, amount) {
 // 0–5 for language ratings; 0 means "unknown level, show the text instead".
 export function levelDots(level) {
   const l = String(level || '').toLowerCase()
-  if (/native|bilingual|c2|fluent|materinski|izvorni/.test(l)) return 5
+  if (/native|bilingual|c2|fluent|materinski|izvorni|tečno|tecno/.test(l)) return 5
   if (/c1|advanced|full|professional|napredn/.test(l)) return 4
   if (/b2|b1|upper|intermediate|conversational|srednj/.test(l)) return 3
   if (/a2|elementary|basic|limited|osnovn/.test(l)) return 2
@@ -77,7 +78,8 @@ const filled = (obj, keys) => keys.some((k) => String(obj[k] || '').trim())
 
 // Everything a template needs, already cleaned (empty rows dropped, dates formatted).
 export function buildCvView(cv) {
-  const t = cvLabels[cv.meta.language] || cvLabels.en
+  const lang = cv.meta.language === 'hr' ? 'hr' : 'en'
+  const t = cvLabels[lang]
   const range = (item) => {
     const end = item.current ? t.present : item.end
     return [item.start, end].filter((s) => String(s || '').trim()).join(' – ')
@@ -104,12 +106,17 @@ export function buildCvView(cv) {
       p.website && { icon: 'globe', text: prettyUrl(p.website) },
       p.linkedin && { icon: 'linkedin', text: prettyUrl(p.linkedin) }
     ].filter(Boolean),
+    // Employment type is shown next to the company like LinkedIn does ("Acme · Internship"); full-time is the default and stays implicit.
     experience: cv.experience
       .filter((e) => filled(e, ['role', 'company', 'description', 'start']))
-      .map((e) => ({ ...e, dates: range(e) })),
+      .map((e) => {
+        const type = e.type && e.type !== 'full-time' ? optionLabel(experienceTypes, e.type, lang) : ''
+        return { ...e, company: [e.company, type].filter((s) => String(s || '').trim()).join(' · '), dates: range(e) }
+      }),
+    // With no degree written (e.g. a secondary school) the level stands in as the title.
     education: cv.education
       .filter((e) => filled(e, ['degree', 'school', 'description', 'start']))
-      .map((e) => ({ ...e, dates: range(e) })),
+      .map((e) => ({ ...e, degree: e.degree.trim() || optionLabel(educationLevels, e.level, lang), dates: range(e) })),
     skills: cv.skills.filter(Boolean),
     languages: cv.languages.filter((l) => l.name.trim()).map((l) => ({ ...l, dots: levelDots(l.level) })),
     certifications: cv.certifications.filter((c) => c.name.trim())

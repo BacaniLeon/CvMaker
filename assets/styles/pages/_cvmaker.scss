@@ -146,6 +146,14 @@ $bar-height: 60rem;
     color: var(--warning);
   }
 
+  &__summary-foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8rem;
+  }
+
   &__footer {
     display: flex;
     justify-content: center;
@@ -548,7 +556,7 @@ $bar-height: 60rem;
 
   &__current {
     justify-content: flex-end;
-    padding-bottom: 10rem;
+    margin-top: -4rem;
   }
 }
 
@@ -925,5 +933,75 @@ $bar-height: 60rem;
     font-size: 11rem;
     font-weight: 500;
     color: var(--muted);
+  }
+}
+
+// ---------- generated summary preview (Profile section)
+
+.genpanel {
+  margin-top: 12rem;
+  padding: 14rem 16rem;
+  border: 1rem solid rgba(57, 67, 183, 0.22);
+  border-radius: var(--radius-sm);
+  background: linear-gradient(180deg, var(--brand-soft), var(--surface) 70%);
+
+  &__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8rem;
+    margin-bottom: 8rem;
+  }
+
+  &__title {
+    display: inline-flex;
+    align-items: center;
+    gap: 6rem;
+    font-size: 13rem;
+    font-weight: 650;
+    color: var(--brand-ink);
+  }
+
+  &__step {
+    font-size: 11.5rem;
+    color: var(--muted);
+  }
+
+  &__text {
+    font-size: 14rem;
+    line-height: 1.6;
+    color: var(--ink);
+  }
+
+  &__note {
+    margin-top: 8rem;
+    font-size: 12rem;
+    color: var(--muted);
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6rem;
+    margin-top: 12rem;
+  }
+}
+
+.genpanel-enter-active {
+  transition: opacity 0.2s ease, transform 0.25s var(--ease-out);
+}
+.genpanel-leave-active {
+  transition: opacity 0.14s ease;
+}
+.genpanel-enter-from {
+  opacity: 0;
+  transform: translateY(-6rem);
+}
+.genpanel-leave-to {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .genpanel-enter-from {
+    transform: none;
   }
 }

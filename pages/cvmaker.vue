@@ -117,10 +117,41 @@
               rows="5"
               placeholder="Frontend developer with 4 years of experience building fast, accessible web apps with Vue and Nuxt…"
             />
-            <span class="field__hint editor__counter" :class="{ 'is-long': cv.summary.length > 600 }">
-              {{ cv.summary.length }} characters · 300–600 reads best
+            <span class="editor__summary-foot">
+              <span class="field__hint editor__counter" :class="{ 'is-long': cv.summary.length > 600 }">
+                {{ cv.summary.length }} characters · 300–600 reads best
+              </span>
+              <button
+                type="button"
+                class="btn btn--outline btn--sm"
+                :disabled="!canGenerate"
+                :title="canGenerate ? 'Write a summary from your title, experience, education and skills' : 'Add a job title, experience, education or skills first'"
+                @click.prevent="openGenerator"
+              >
+                <AppIcon name="spark" :size="15" /> Generate from my CV
+              </button>
             </span>
           </label>
+
+          <Transition name="genpanel">
+            <div v-if="generated !== null" class="genpanel" role="region" aria-label="Generated summary">
+              <div class="genpanel__head">
+                <span class="genpanel__title"><AppIcon name="spark" :size="15" /> Suggested summary</span>
+                <span class="genpanel__step">Version {{ genVariant + 1 }} of {{ SUMMARY_VARIANTS }}</span>
+              </div>
+              <p class="genpanel__text">{{ generated }}</p>
+              <p class="genpanel__note">Built only from what you entered — read it through and tweak it to sound like you.</p>
+              <div class="genpanel__actions">
+                <button type="button" class="btn btn--primary btn--sm" @click="useGenerated">
+                  <AppIcon name="check" :size="15" /> {{ cv.summary.trim() ? 'Replace my summary' : 'Use this' }}
+                </button>
+                <button type="button" class="btn btn--ghost btn--sm" @click="nextVariant">
+                  <AppIcon name="refresh" :size="15" /> Another version
+                </button>
+                <button type="button" class="btn btn--ghost btn--sm" @click="generated = null">Cancel</button>
+              </div>
+            </div>
+          </Transition>
         </EditorSection>
 
         <EditorSection title="Experience" subtitle="Jobs, internships, projects" icon="briefcase" :count="cv.experience.length">
@@ -129,6 +160,7 @@
             noun="position"
             :primary="{ key: 'role', label: 'Job title', placeholder: 'Frontend Developer' }"
             :secondary="{ key: 'company', label: 'Company', placeholder: 'Acme d.o.o.' }"
+            :kind="{ key: 'type', label: 'Employment type', placeholder: 'Choose type…', options: typeOptions, infer: inferExperienceType }"
             desc-placeholder="- Rebuilt the checkout in Nuxt, cutting load time by 40%&#10;- Mentored two junior developers"
           />
         </EditorSection>
@@ -139,31 +171,24 @@
             noun="education"
             :primary="{ key: 'degree', label: 'Degree / programme', placeholder: 'BSc Computer Science' }"
             :secondary="{ key: 'school', label: 'School', placeholder: 'University of Zagreb' }"
+            :kind="{ key: 'level', label: 'Level', placeholder: 'Choose level…', options: levelOptions, infer: inferEducationLevel }"
             current-label="I'm still studying here"
             desc-placeholder="Thesis, awards, relevant courses…"
           />
         </EditorSection>
 
-        <EditorSection title="Skills" subtitle="Press Enter or comma after each one" icon="spark" :count="cv.skills.length">
-          <EditorTagInput v-model="cv.skills" placeholder="e.g. Vue.js — then press Enter" />
+        <EditorSection title="Skills" subtitle="Type to search, or pick from suggestions" icon="spark" :count="cv.skills.length">
+          <EditorTagInput
+            v-model="cv.skills"
+            :source="skillSource"
+            placeholder="Start typing, e.g. Vue, Excel, timski rad…"
+            @language="addLanguageFromSkills"
+          />
+          <EditorSkillSuggestions />
         </EditorSection>
 
         <EditorSection title="Languages" icon="globe" :count="cv.languages.length">
-          <div class="rows">
-            <div v-for="(l, i) in cv.languages" :key="l.id" class="rows__row">
-              <input v-model="l.name" class="input" placeholder="Language" aria-label="Language" />
-              <input v-model="l.level" class="input" list="language-levels" placeholder="Level" aria-label="Level" />
-              <button type="button" class="btn btn--icon" aria-label="Remove language" @click="removeItem('languages', i)">
-                <AppIcon name="trash" :size="16" />
-              </button>
-            </div>
-            <datalist id="language-levels">
-              <option v-for="lvl in languageLevels" :key="lvl" :value="lvl" />
-            </datalist>
-            <button type="button" class="entries__add" @click="addItem('languages')">
-              <AppIcon name="plus" :size="16" /> Add language
-            </button>
-          </div>
+          <EditorLanguageRows />
         </EditorSection>
 
         <EditorSection title="Certifications" subtitle="Certificates, courses, awards" icon="award" :count="cv.certifications.length">
@@ -330,7 +355,39 @@ function pickTemplate(id) {
   cv.value.meta.template = id
   galleryOpen.value = false
 }
-const languageLevels =['Native', 'Fluent', 'C2', 'C1', 'B2', 'B1', 'A2', 'A1', 'Basic']
+/* ---------- suggestions: employment type, education level, skills, summary */
+const cvLang = computed(() => (cv.value.meta.language === 'hr' ? 'hr' : 'en'))
+const typeOptions = computed(() => experienceTypes.map((t) => ({ value: t.id, label: t[cvLang.value] })))
+const levelOptions = computed(() => educationLevels.map((l) => ({ value: l.id, label: l[cvLang.value] })))
+
+const skillSource = (q) =>
+  searchSkills(q, { lang: cvLang.value, exclude: cv.value.skills, languagesOnCv: cv.value.languages.map((l) => l.name) })
+
+// Typing a language in Skills ("ger" -> German) puts it where it belongs.
+function addLanguageFromSkills(name) {
+  if (!cv.value.languages.some((l) => fold(l.name) === fold(name))) {
+    const item = addItem('languages')
+    item.name = name
+  }
+  toast({ title: `${name} added to Languages`, text: 'Set your level there — languages get their own section on the CV.' })
+}
+
+const canGenerate = computed(() => canGenerateSummary(cv.value))
+const generated = ref(null)
+const genVariant = ref(0)
+function openGenerator() {
+  genVariant.value = 0
+  generated.value = generateSummary(cv.value, 0)
+}
+function nextVariant() {
+  genVariant.value = (genVariant.value + 1) % SUMMARY_VARIANTS
+  generated.value = generateSummary(cv.value, genVariant.value)
+}
+function useGenerated() {
+  cv.value.summary = generated.value
+  generated.value = null
+  toast({ title: 'Summary added', text: 'Feel free to edit it — it is just a starting point.' })
+}
 const isPresetAccent = computed(() => cvAccents.some((c) => c.toLowerCase() === cv.value.meta.accent.toLowerCase()))
 
 /* ---------- autosave */

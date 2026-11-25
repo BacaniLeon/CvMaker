@@ -1,6 +1,7 @@
 // Central CV state: one reactive object shared by every page, autosaved to localStorage.
 import { cvTemplates } from '~/utils/cvView'
 import { cvFonts, DEFAULT_CV_FONT } from '~/utils/cvFonts'
+import { experienceTypes, educationLevels, inferExperienceType, inferEducationLevel } from '~/utils/cvSuggest'
 
 export const DRAFT_STORAGE_KEY = 'cvmaker:draft:v2'
 const STORAGE_KEY = DRAFT_STORAGE_KEY
@@ -10,10 +11,10 @@ export const CV_VERSION = 2
 export const uid = () => Math.random().toString(36).slice(2, 10)
 
 export const emptyExperience = () => ({
-  id: uid(), role: '', company: '', location: '', start: '', end: '', current: false, description: ''
+  id: uid(), role: '', company: '', type: '', location: '', start: '', end: '', current: false, description: ''
 })
 export const emptyEducation = () => ({
-  id: uid(), degree: '', school: '', location: '', start: '', end: '', current: false, description: ''
+  id: uid(), degree: '', school: '', level: '', location: '', start: '', end: '', current: false, description: ''
 })
 export const emptyLanguage = () => ({ id: uid(), name: '', level: '' })
 export const emptyCertification = () => ({ id: uid(), name: '', issuer: '', date: '' })
@@ -63,13 +64,23 @@ export function normalizeCv(raw) {
       return out
     })
 
+  // Older drafts and imported CVs have no employment type / education level yet: guess it from the text.
+  const experience = list('experience', ['role', 'company', 'type', 'location', 'start', 'end', 'current', 'description']).map((e) => ({
+    ...e,
+    type: experienceTypes.some((t) => t.id === e.type) ? e.type : inferExperienceType(e)
+  }))
+  const education = list('education', ['degree', 'school', 'level', 'location', 'start', 'end', 'current', 'description']).map((e) => ({
+    ...e,
+    level: educationLevels.some((l) => l.id === e.level) ? e.level : inferEducationLevel(e)
+  }))
+
   return {
     ...base,
     meta,
     personal,
     summary: str(raw.summary),
-    experience: list('experience', ['role', 'company', 'location', 'start', 'end', 'current', 'description']),
-    education: list('education', ['degree', 'school', 'location', 'start', 'end', 'current', 'description']),
+    experience,
+    education,
     languages: list('languages', ['name', 'level']),
     certifications: list('certifications', ['name', 'issuer', 'date']),
     skills: (Array.isArray(raw.skills) ? raw.skills : [])
@@ -132,7 +143,8 @@ export function useCv() {
   function addItem(key) {
     const item = factories[key]()
     cv.value[key].push(item)
-    return item
+    // Return the reactive copy so callers can keep editing it.
+    return cv.value[key][cv.value[key].length - 1]
   }
 
   function removeItem(key, index) {
