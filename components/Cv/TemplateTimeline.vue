@@ -14,11 +14,11 @@
       </ul>
     </header>
 
-    <section v-if="v.summary" class="tl__summary">
+    <section v-if="v.summary" class="tl__summary cv-sec cv-sec--summary">
       <CvRichText :text="v.summary" :dot="v.accent" />
     </section>
 
-    <section v-for="block in blocks" :key="block.key" class="tl__section">
+    <section v-for="block in blocks" :key="block.key" class="tl__section cv-sec" :class="`cv-sec--${block.key}`">
       <h2 class="tl__h"><span :style="{ background: v.accent }" />{{ block.title }}</h2>
       <article v-for="e in block.items" :key="e.id" class="tl__item cv-keep">
         <div class="tl__when">{{ e.dates }}</div>
@@ -32,15 +32,15 @@
     </section>
 
     <div class="tl__grid">
-      <section v-if="v.skills.length" class="cv-keep">
+      <section v-if="v.skills.length" class="cv-keep cv-sec cv-sec--skills">
         <h2 class="tl__h"><span :style="{ background: v.accent }" />{{ v.t.skills }}</h2>
         <div class="tl__chips"><span v-for="s in v.skills" :key="s" :style="{ background: v.accentSoft, color: v.accentDark }">{{ s }}</span></div>
       </section>
-      <section v-if="v.languages.length" class="cv-keep">
+      <section v-if="v.languages.length" class="cv-keep cv-sec cv-sec--languages">
         <h2 class="tl__h"><span :style="{ background: v.accent }" />{{ v.t.languages }}</h2>
         <p v-for="l in v.languages" :key="l.id" class="tl__small"><strong>{{ l.name }}</strong> {{ l.level }}</p>
       </section>
-      <section v-if="v.certifications.length" class="cv-keep">
+      <section v-if="v.certifications.length" class="cv-keep cv-sec cv-sec--certifications">
         <h2 class="tl__h"><span :style="{ background: v.accent }" />{{ v.t.certifications }}</h2>
         <p v-for="c in v.certifications" :key="c.id" class="tl__small"><strong>{{ c.name }}</strong> {{ [c.issuer, c.date].filter(Boolean).join(', ') }}</p>
       </section>
@@ -53,8 +53,8 @@
 const props = defineProps({ v: { type: Object, required: true } })
 const blocks = computed(() =>
   [
-    { key: 'exp', title: props.v.t.experience, items: props.v.experience.map((e) => ({ ...e, primary: e.role, secondary: e.company })) },
-    { key: 'edu', title: props.v.t.education, items: props.v.education.map((e) => ({ ...e, primary: e.degree, secondary: e.school })) }
+    { key: 'experience', title: props.v.t.experience, items: props.v.experience.map((e) => ({ ...e, primary: e.role, secondary: e.company })) },
+    { key: 'education', title: props.v.t.education, items: props.v.education.map((e) => ({ ...e, primary: e.degree, secondary: e.school })) }
   ].filter((b) => b.items.length)
 )
 </script>

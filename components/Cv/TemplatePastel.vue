@@ -10,15 +10,15 @@
           <span class="tpa__ic"><AppIcon :name="c.icon" :size="11" :color="v.accent" :stroke="2.2" /></span><span>{{ c.text }}</span>
         </p>
       </section>
-      <section v-if="v.skills.length" class="tpa__block">
+      <section v-if="v.skills.length" class="tpa__block cv-sec cv-sec--skills">
         <h3 class="tpa__sh" :style="{ color: v.accentDark }">{{ v.t.skills }}</h3>
         <div class="tpa__chips"><span v-for="s in v.skills" :key="s" :style="{ color: v.accentDark }">{{ s }}</span></div>
       </section>
-      <section v-if="v.languages.length" class="tpa__block">
+      <section v-if="v.languages.length" class="tpa__block cv-sec cv-sec--languages">
         <h3 class="tpa__sh" :style="{ color: v.accentDark }">{{ v.t.languages }}</h3>
         <p v-for="l in v.languages" :key="l.id" class="tpa__item"><strong>{{ l.name }}</strong><span>{{ l.level }}</span></p>
       </section>
-      <section v-if="v.certifications.length" class="tpa__block">
+      <section v-if="v.certifications.length" class="tpa__block cv-sec cv-sec--certifications">
         <h3 class="tpa__sh" :style="{ color: v.accentDark }">{{ v.t.certifications }}</h3>
         <p v-for="c in v.certifications" :key="c.id" class="tpa__item cv-keep"><strong>{{ c.name }}</strong><span>{{ [c.issuer, c.date].filter(Boolean).join(' · ') }}</span></p>
       </section>
@@ -34,11 +34,11 @@
         </p>
       </header>
 
-      <section v-if="v.summary" class="tpa__section">
+      <section v-if="v.summary" class="tpa__section cv-sec cv-sec--summary">
         <h2 class="tpa__h" :style="{ background: v.accentSoft, color: v.accentDark }">{{ v.t.profile }}</h2>
         <CvRichText :text="v.summary" :dot="v.accent" />
       </section>
-      <section v-if="v.experience.length" class="tpa__section">
+      <section v-if="v.experience.length" class="tpa__section cv-sec cv-sec--experience">
         <h2 class="tpa__h" :style="{ background: v.accentSoft, color: v.accentDark }">{{ v.t.experience }}</h2>
         <article v-for="e in v.experience" :key="e.id" class="tpa__entry cv-keep">
           <div class="tpa__row">
@@ -49,7 +49,7 @@
           <CvRichText :text="e.description" :dot="v.accent" />
         </article>
       </section>
-      <section v-if="v.education.length" class="tpa__section">
+      <section v-if="v.education.length" class="tpa__section cv-sec cv-sec--education">
         <h2 class="tpa__h" :style="{ background: v.accentSoft, color: v.accentDark }">{{ v.t.education }}</h2>
         <article v-for="e in v.education" :key="e.id" class="tpa__entry cv-keep">
           <div class="tpa__row">

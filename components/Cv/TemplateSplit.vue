@@ -17,11 +17,11 @@
 
     <div class="tp__cols">
       <div class="tp__col">
-        <section v-if="v.summary" class="tp__section">
+        <section v-if="v.summary" class="tp__section cv-sec cv-sec--summary">
           <h2 class="tp__h"><b :style="{ color: v.accent }">{{ num('summary') }}</b>{{ v.t.profile }}</h2>
           <CvRichText :text="v.summary" :dot="v.accent" />
         </section>
-        <section v-if="v.experience.length" class="tp__section">
+        <section v-if="v.experience.length" class="tp__section cv-sec cv-sec--experience">
           <h2 class="tp__h"><b :style="{ color: v.accent }">{{ num('experience') }}</b>{{ v.t.experience }}</h2>
           <article v-for="e in v.experience" :key="e.id" class="tp__entry cv-keep">
             <p class="tp__date" :style="{ color: v.accent }">{{ e.dates }}</p>
@@ -33,7 +33,7 @@
         <i class="cv-end" />
       </div>
       <div class="tp__col">
-        <section v-if="v.education.length" class="tp__section">
+        <section v-if="v.education.length" class="tp__section cv-sec cv-sec--education">
           <h2 class="tp__h"><b :style="{ color: v.accent }">{{ num('education') }}</b>{{ v.t.education }}</h2>
           <article v-for="e in v.education" :key="e.id" class="tp__entry cv-keep">
             <p class="tp__date" :style="{ color: v.accent }">{{ e.dates }}</p>
@@ -42,15 +42,15 @@
             <CvRichText :text="e.description" :dot="v.accent" />
           </article>
         </section>
-        <section v-if="v.skills.length" class="tp__section">
+        <section v-if="v.skills.length" class="tp__section cv-sec cv-sec--skills">
           <h2 class="tp__h"><b :style="{ color: v.accent }">{{ num('skills') }}</b>{{ v.t.skills }}</h2>
           <div class="tp__chips"><span v-for="s in v.skills" :key="s" :style="{ borderColor: v.accentLine }">{{ s }}</span></div>
         </section>
-        <section v-if="v.languages.length" class="tp__section">
+        <section v-if="v.languages.length" class="tp__section cv-sec cv-sec--languages">
           <h2 class="tp__h"><b :style="{ color: v.accent }">{{ num('languages') }}</b>{{ v.t.languages }}</h2>
           <p v-for="l in v.languages" :key="l.id" class="tp__kv"><strong>{{ l.name }}</strong><span>{{ l.level }}</span></p>
         </section>
-        <section v-if="v.certifications.length" class="tp__section">
+        <section v-if="v.certifications.length" class="tp__section cv-sec cv-sec--certifications">
           <h2 class="tp__h"><b :style="{ color: v.accent }">{{ num('certifications') }}</b>{{ v.t.certifications }}</h2>
           <p v-for="c in v.certifications" :key="c.id" class="tp__cert cv-keep"><strong>{{ c.name }}</strong> {{ [c.issuer, c.date].filter(Boolean).join(' · ') }}</p>
         </section>
@@ -62,17 +62,21 @@
 
 <script setup>
 const props = defineProps({ v: { type: Object, required: true } })
-// Number only the sections that are actually shown: 01, 02, …
-const shown = computed(() =>
-  [
-    ['summary', props.v.summary],
-    ['experience', props.v.experience.length],
-    ['education', props.v.education.length],
-    ['skills', props.v.skills.length],
-    ['languages', props.v.languages.length],
-    ['certifications', props.v.certifications.length]
-  ].filter(([, has]) => has).map(([k]) => k)
-)
+// Number only the sections that are shown, in reading order: left column, then right column,
+// each following the chosen section order.
+const columns = [['summary', 'experience'], ['education', 'skills', 'languages', 'certifications']]
+const shown = computed(() => {
+  const has = {
+    summary: props.v.summary,
+    experience: props.v.experience.length,
+    education: props.v.education.length,
+    skills: props.v.skills.length,
+    languages: props.v.languages.length,
+    certifications: props.v.certifications.length
+  }
+  const rank = (k) => props.v.sectionOrder.indexOf(k)
+  return columns.flatMap((col) => col.filter((k) => has[k]).sort((a, b) => rank(a) - rank(b)))
+})
 const num = (key) => String(shown.value.indexOf(key) + 1).padStart(2, '0')
 </script>
 

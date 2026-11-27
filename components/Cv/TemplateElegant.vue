@@ -9,12 +9,12 @@
       </p>
     </header>
 
-    <section v-if="v.summary" class="tg__section">
+    <section v-if="v.summary" class="tg__section cv-sec cv-sec--summary">
       <h2 class="tg__h"><i :style="{ background: v.accentLine }" /><span>{{ v.t.profile }}</span><i :style="{ background: v.accentLine }" /></h2>
       <div class="tg__summary"><CvRichText :text="v.summary" :dot="v.accent" /></div>
     </section>
 
-    <section v-if="v.experience.length" class="tg__section">
+    <section v-if="v.experience.length" class="tg__section cv-sec cv-sec--experience">
       <h2 class="tg__h"><i :style="{ background: v.accentLine }" /><span>{{ v.t.experience }}</span><i :style="{ background: v.accentLine }" /></h2>
       <article v-for="e in v.experience" :key="e.id" class="tg__entry cv-keep">
         <div class="tg__row">
@@ -26,7 +26,7 @@
       </article>
     </section>
 
-    <section v-if="v.education.length" class="tg__section">
+    <section v-if="v.education.length" class="tg__section cv-sec cv-sec--education">
       <h2 class="tg__h"><i :style="{ background: v.accentLine }" /><span>{{ v.t.education }}</span><i :style="{ background: v.accentLine }" /></h2>
       <article v-for="e in v.education" :key="e.id" class="tg__entry cv-keep">
         <div class="tg__row">
@@ -39,11 +39,11 @@
     </section>
 
     <div class="tg__cols">
-      <section v-if="v.skills.length" class="tg__section cv-keep">
+      <section v-if="v.skills.length" class="tg__section cv-keep cv-sec cv-sec--skills">
         <h2 class="tg__h"><i :style="{ background: v.accentLine }" /><span>{{ v.t.skills }}</span><i :style="{ background: v.accentLine }" /></h2>
         <p class="tg__center">{{ v.skills.join(' · ') }}</p>
       </section>
-      <section v-if="v.languages.length" class="tg__section cv-keep">
+      <section v-if="v.languages.length" class="tg__section cv-keep cv-sec cv-sec--languages">
         <h2 class="tg__h"><i :style="{ background: v.accentLine }" /><span>{{ v.t.languages }}</span><i :style="{ background: v.accentLine }" /></h2>
         <p class="tg__center">
           <template v-for="(l, i) in v.languages" :key="l.id">{{ i ? ' · ' : '' }}{{ l.name }}<em v-if="l.level"> ({{ l.level }})</em></template>
@@ -51,7 +51,7 @@
       </section>
     </div>
 
-    <section v-if="v.certifications.length" class="tg__section">
+    <section v-if="v.certifications.length" class="tg__section cv-sec cv-sec--certifications">
       <h2 class="tg__h"><i :style="{ background: v.accentLine }" /><span>{{ v.t.certifications }}</span><i :style="{ background: v.accentLine }" /></h2>
       <p v-for="c in v.certifications" :key="c.id" class="tg__center cv-keep">
         <strong>{{ c.name }}</strong><em v-if="c.issuer || c.date"> — {{ [c.issuer, c.date].filter(Boolean).join(', ') }}</em>

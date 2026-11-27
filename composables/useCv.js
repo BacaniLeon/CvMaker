@@ -1,5 +1,5 @@
 // Central CV state: one reactive object shared by every page, autosaved to localStorage.
-import { cvTemplates } from '~/utils/cvView'
+import { cvTemplates, DEFAULT_SECTION_ORDER, normalizeSectionOrder } from '~/utils/cvView'
 import { cvFonts, DEFAULT_CV_FONT } from '~/utils/cvFonts'
 import { experienceTypes, educationLevels, inferExperienceType, inferEducationLevel } from '~/utils/cvSuggest'
 
@@ -29,7 +29,7 @@ const factories = {
 export const createEmptyCv = () => ({
   format: CV_FORMAT,
   version: CV_VERSION,
-  meta: { template: 'modern', accent: '#3943B7', font: 'sans', language: 'en', updatedAt: null },
+  meta: { template: 'modern', accent: '#3943B7', font: 'sans', language: 'en', sectionOrder: [...DEFAULT_SECTION_ORDER], updatedAt: null },
   personal: { fullName: '', title: '', email: '', phone: '', location: '', website: '', linkedin: '', photo: '' },
   summary: '',
   experience: [],
@@ -52,6 +52,7 @@ export function normalizeCv(raw) {
   if (!cvFonts[meta.font]) meta.font = DEFAULT_CV_FONT
   if (!['en', 'hr'].includes(meta.language)) meta.language = 'en'
   if (!/^#[0-9a-f]{6}$/i.test(meta.accent)) meta.accent = base.meta.accent
+  meta.sectionOrder = normalizeSectionOrder(meta.sectionOrder)
 
   const personal = { ...base.personal }
   for (const key of Object.keys(personal)) personal[key] = str(raw.personal?.[key]).trim()

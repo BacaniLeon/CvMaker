@@ -13,14 +13,14 @@
         </ul>
       </section>
 
-      <section v-if="v.skills.length" class="tm__block">
+      <section v-if="v.skills.length" class="tm__block cv-sec cv-sec--skills">
         <h3 class="tm__side-title">{{ v.t.skills }}</h3>
         <div class="tm__chips">
           <span v-for="s in v.skills" :key="s" class="tm__chip">{{ s }}</span>
         </div>
       </section>
 
-      <section v-if="v.languages.length" class="tm__block">
+      <section v-if="v.languages.length" class="tm__block cv-sec cv-sec--languages">
         <h3 class="tm__side-title">{{ v.t.languages }}</h3>
         <ul class="tm__plain">
           <li v-for="l in v.languages" :key="l.id">
@@ -29,7 +29,7 @@
         </ul>
       </section>
 
-      <section v-if="v.certifications.length" class="tm__block">
+      <section v-if="v.certifications.length" class="tm__block cv-sec cv-sec--certifications">
         <h3 class="tm__side-title">{{ v.t.certifications }}</h3>
         <ul class="tm__plain">
           <li v-for="c in v.certifications" :key="c.id" class="cv-keep">
@@ -49,12 +49,12 @@
         </p>
       </header>
 
-      <section v-if="v.summary" class="tm__section">
+      <section v-if="v.summary" class="tm__section cv-sec cv-sec--summary">
         <h2 class="tm__heading" :style="{ color: v.accent, borderColor: v.accentLine }">{{ v.t.profile }}</h2>
         <CvRichText :text="v.summary" :dot="v.accent" />
       </section>
 
-      <section v-if="v.experience.length" class="tm__section">
+      <section v-if="v.experience.length" class="tm__section cv-sec cv-sec--experience">
         <h2 class="tm__heading" :style="{ color: v.accent, borderColor: v.accentLine }">{{ v.t.experience }}</h2>
         <article v-for="e in v.experience" :key="e.id" class="tm__entry cv-keep">
           <div class="tm__entry-head">
@@ -68,7 +68,7 @@
         </article>
       </section>
 
-      <section v-if="v.education.length" class="tm__section">
+      <section v-if="v.education.length" class="tm__section cv-sec cv-sec--education">
         <h2 class="tm__heading" :style="{ color: v.accent, borderColor: v.accentLine }">{{ v.t.education }}</h2>
         <article v-for="e in v.education" :key="e.id" class="tm__entry cv-keep">
           <div class="tm__entry-head">

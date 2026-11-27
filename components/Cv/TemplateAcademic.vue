@@ -13,12 +13,12 @@
       </div>
     </header>
 
-    <section v-if="v.summary" class="tc2__section">
+    <section v-if="v.summary" class="tc2__section cv-sec cv-sec--summary">
       <div class="tc2__hrow"><span /><h2 class="tc2__h" :style="{ color: v.accent }">{{ v.t.profile }}</h2></div>
       <div class="tc2__grid"><span /><CvRichText :text="v.summary" :dot="v.accent" /></div>
     </section>
 
-    <section v-if="v.experience.length" class="tc2__section">
+    <section v-if="v.experience.length" class="tc2__section cv-sec cv-sec--experience">
       <div class="tc2__hrow"><span /><h2 class="tc2__h" :style="{ color: v.accent }">{{ v.t.experience }}</h2></div>
       <article v-for="e in v.experience" :key="e.id" class="tc2__grid tc2__entry cv-keep">
         <span class="tc2__date">{{ e.dates }}</span>
@@ -30,7 +30,7 @@
       </article>
     </section>
 
-    <section v-if="v.education.length" class="tc2__section">
+    <section v-if="v.education.length" class="tc2__section cv-sec cv-sec--education">
       <div class="tc2__hrow"><span /><h2 class="tc2__h" :style="{ color: v.accent }">{{ v.t.education }}</h2></div>
       <article v-for="e in v.education" :key="e.id" class="tc2__grid tc2__entry cv-keep">
         <span class="tc2__date">{{ e.dates }}</span>
@@ -42,7 +42,7 @@
       </article>
     </section>
 
-    <section v-if="v.certifications.length" class="tc2__section">
+    <section v-if="v.certifications.length" class="tc2__section cv-sec cv-sec--certifications">
       <div class="tc2__hrow"><span /><h2 class="tc2__h" :style="{ color: v.accent }">{{ v.t.certifications }}</h2></div>
       <div v-for="c in v.certifications" :key="c.id" class="tc2__grid tc2__entry cv-keep">
         <span class="tc2__date">{{ c.date }}</span>
@@ -50,13 +50,13 @@
       </div>
     </section>
 
-    <section v-if="v.skills.length || v.languages.length" class="tc2__section cv-keep">
+    <section v-if="v.skills.length || v.languages.length" class="tc2__section cv-keep cv-sec cv-sec--skills">
       <div class="tc2__hrow"><span /><h2 class="tc2__h" :style="{ color: v.accent }">{{ v.t.skills }}</h2></div>
-      <div v-if="v.skills.length" class="tc2__grid tc2__entry">
+      <div v-if="v.skills.length" class="tc2__grid tc2__entry cv-sec cv-sec--skills">
         <span class="tc2__date">{{ v.t.skills }}</span>
         <p>{{ v.skills.join(', ') }}</p>
       </div>
-      <div v-if="v.languages.length" class="tc2__grid tc2__entry">
+      <div v-if="v.languages.length" class="tc2__grid tc2__entry cv-sec cv-sec--languages">
         <span class="tc2__date">{{ v.t.languages }}</span>
         <p>{{ v.languages.map((l) => (l.level ? `${l.name} (${l.level})` : l.name)).join(', ') }}</p>
       </div>

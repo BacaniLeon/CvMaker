@@ -14,14 +14,14 @@
       </div>
     </header>
 
-    <section v-if="v.summary" class="tq__card">
+    <section v-if="v.summary" class="tq__card cv-sec cv-sec--summary">
       <h2 class="tq__h"><i :style="{ background: v.accent }" />{{ v.t.profile }}</h2>
       <CvRichText :text="v.summary" :dot="v.accent" />
     </section>
 
     <div class="tq__cols">
       <div class="tq__main">
-        <section v-if="v.experience.length" class="tq__card">
+        <section v-if="v.experience.length" class="tq__card cv-sec cv-sec--experience">
           <h2 class="tq__h"><i :style="{ background: v.accent }" />{{ v.t.experience }}</h2>
           <article v-for="e in v.experience" :key="e.id" class="tq__entry cv-keep">
             <div class="tq__row">
@@ -32,7 +32,7 @@
             <CvRichText :text="e.description" :dot="v.accent" />
           </article>
         </section>
-        <section v-if="v.education.length" class="tq__card">
+        <section v-if="v.education.length" class="tq__card cv-sec cv-sec--education">
           <h2 class="tq__h"><i :style="{ background: v.accent }" />{{ v.t.education }}</h2>
           <article v-for="e in v.education" :key="e.id" class="tq__entry cv-keep">
             <div class="tq__row">
@@ -46,18 +46,18 @@
         <i class="cv-end" />
       </div>
       <div class="tq__side">
-        <section v-if="v.skills.length" class="tq__card">
+        <section v-if="v.skills.length" class="tq__card cv-sec cv-sec--skills">
           <h2 class="tq__h"><i :style="{ background: v.accent }" />{{ v.t.skills }}</h2>
           <div class="tq__chips"><span v-for="s in v.skills" :key="s">{{ s }}</span></div>
         </section>
-        <section v-if="v.languages.length" class="tq__card">
+        <section v-if="v.languages.length" class="tq__card cv-sec cv-sec--languages">
           <h2 class="tq__h"><i :style="{ background: v.accent }" />{{ v.t.languages }}</h2>
           <div v-for="l in v.languages" :key="l.id" class="tq__lang">
             <div class="tq__lang-top"><strong>{{ l.name }}</strong><span>{{ l.level }}</span></div>
             <div v-if="l.dots" class="tq__bar"><i :style="{ width: `${l.dots * 20}%`, background: v.accent }" /></div>
           </div>
         </section>
-        <section v-if="v.certifications.length" class="tq__card">
+        <section v-if="v.certifications.length" class="tq__card cv-sec cv-sec--certifications">
           <h2 class="tq__h"><i :style="{ background: v.accent }" />{{ v.t.certifications }}</h2>
           <p v-for="c in v.certifications" :key="c.id" class="tq__cert cv-keep"><strong>{{ c.name }}</strong><span>{{ [c.issuer, c.date].filter(Boolean).join(' · ') }}</span></p>
         </section>

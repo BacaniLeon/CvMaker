@@ -12,11 +12,11 @@
 
     <div class="tr__cols">
       <main class="tr__main">
-        <section v-if="v.summary" class="tr__section">
+        <section v-if="v.summary" class="tr__section cv-sec cv-sec--summary">
           <h2 class="tr__h"><span :style="{ background: `linear-gradient(90deg, ${v.accent}, ${v.accentLight})` }" />{{ v.t.profile }}</h2>
           <CvRichText :text="v.summary" :dot="v.accent" />
         </section>
-        <section v-if="v.experience.length" class="tr__section">
+        <section v-if="v.experience.length" class="tr__section cv-sec cv-sec--experience">
           <h2 class="tr__h"><span :style="{ background: `linear-gradient(90deg, ${v.accent}, ${v.accentLight})` }" />{{ v.t.experience }}</h2>
           <article v-for="e in v.experience" :key="e.id" class="tr__entry cv-keep">
             <div class="tr__row">
@@ -27,7 +27,7 @@
             <CvRichText :text="e.description" :dot="v.accent" />
           </article>
         </section>
-        <section v-if="v.education.length" class="tr__section">
+        <section v-if="v.education.length" class="tr__section cv-sec cv-sec--education">
           <h2 class="tr__h"><span :style="{ background: `linear-gradient(90deg, ${v.accent}, ${v.accentLight})` }" />{{ v.t.education }}</h2>
           <article v-for="e in v.education" :key="e.id" class="tr__entry cv-keep">
             <div class="tr__row">
@@ -48,15 +48,15 @@
             <span>{{ c.text }}</span>
           </p>
         </section>
-        <section v-if="v.skills.length" class="tr__section">
+        <section v-if="v.skills.length" class="tr__section cv-sec cv-sec--skills">
           <h2 class="tr__h"><span :style="{ background: `linear-gradient(90deg, ${v.accent}, ${v.accentLight})` }" />{{ v.t.skills }}</h2>
           <div class="tr__chips"><span v-for="s in v.skills" :key="s" :style="{ background: v.accentTint, color: v.accentDark }">{{ s }}</span></div>
         </section>
-        <section v-if="v.languages.length" class="tr__section">
+        <section v-if="v.languages.length" class="tr__section cv-sec cv-sec--languages">
           <h2 class="tr__h"><span :style="{ background: `linear-gradient(90deg, ${v.accent}, ${v.accentLight})` }" />{{ v.t.languages }}</h2>
           <p v-for="l in v.languages" :key="l.id" class="tr__item"><strong>{{ l.name }}</strong><span>{{ l.level }}</span></p>
         </section>
-        <section v-if="v.certifications.length" class="tr__section">
+        <section v-if="v.certifications.length" class="tr__section cv-sec cv-sec--certifications">
           <h2 class="tr__h"><span :style="{ background: `linear-gradient(90deg, ${v.accent}, ${v.accentLight})` }" />{{ v.t.certifications }}</h2>
           <p v-for="c in v.certifications" :key="c.id" class="tr__item cv-keep"><strong>{{ c.name }}</strong><span>{{ [c.issuer, c.date].filter(Boolean).join(' · ') }}</span></p>
         </section>

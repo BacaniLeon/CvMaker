@@ -16,12 +16,12 @@
     </div>
 
     <div class="td__body">
-      <section v-if="v.summary" class="td__section">
+      <section v-if="v.summary" class="td__section cv-sec cv-sec--summary">
         <h2 class="td__h"><span :style="{ color: v.accent }">#</span> {{ v.t.profile.toLowerCase() }}</h2>
         <CvRichText :text="v.summary" :dot="v.accent" />
       </section>
 
-      <section v-if="v.experience.length" class="td__section">
+      <section v-if="v.experience.length" class="td__section cv-sec cv-sec--experience">
         <h2 class="td__h"><span :style="{ color: v.accent }">#</span> {{ v.t.experience.toLowerCase() }}</h2>
         <article v-for="e in v.experience" :key="e.id" class="td__entry cv-keep">
           <div class="td__row">
@@ -33,12 +33,12 @@
         </article>
       </section>
 
-      <section v-if="v.skills.length" class="td__section cv-keep">
+      <section v-if="v.skills.length" class="td__section cv-keep cv-sec cv-sec--skills">
         <h2 class="td__h"><span :style="{ color: v.accent }">#</span> {{ v.t.skills.toLowerCase() }}</h2>
         <div class="td__tags"><code v-for="s in v.skills" :key="s" :style="{ borderColor: v.accentLine, color: v.accentDark, background: v.accentTint }">{{ s }}</code></div>
       </section>
 
-      <section v-if="v.education.length" class="td__section">
+      <section v-if="v.education.length" class="td__section cv-sec cv-sec--education">
         <h2 class="td__h"><span :style="{ color: v.accent }">#</span> {{ v.t.education.toLowerCase() }}</h2>
         <article v-for="e in v.education" :key="e.id" class="td__entry cv-keep">
           <div class="td__row">
@@ -50,11 +50,11 @@
       </section>
 
       <div class="td__grid">
-        <section v-if="v.languages.length" class="td__section cv-keep">
+        <section v-if="v.languages.length" class="td__section cv-keep cv-sec cv-sec--languages">
           <h2 class="td__h"><span :style="{ color: v.accent }">#</span> {{ v.t.languages.toLowerCase() }}</h2>
           <p v-for="l in v.languages" :key="l.id" class="td__kv"><span>{{ l.name }}</span><em>{{ l.level }}</em></p>
         </section>
-        <section v-if="v.certifications.length" class="td__section cv-keep">
+        <section v-if="v.certifications.length" class="td__section cv-keep cv-sec cv-sec--certifications">
           <h2 class="td__h"><span :style="{ color: v.accent }">#</span> {{ v.t.certifications.toLowerCase() }}</h2>
           <p v-for="c in v.certifications" :key="c.id" class="td__kv"><span>{{ c.name }}</span><em>{{ [c.issuer, c.date].filter(Boolean).join(', ') }}</em></p>
         </section>

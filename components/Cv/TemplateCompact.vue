@@ -8,12 +8,12 @@
       <p v-if="v.contact.length" class="tk__contact">{{ v.contact.map((c) => c.text).join('  |  ') }}</p>
     </header>
 
-    <section v-if="v.summary" class="tk__section">
+    <section v-if="v.summary" class="tk__section cv-sec cv-sec--summary">
       <h2 class="tk__h" :style="{ color: v.accent }">{{ v.t.profile }}</h2>
       <CvRichText :text="v.summary" dot="#333" />
     </section>
 
-    <section v-if="v.experience.length" class="tk__section">
+    <section v-if="v.experience.length" class="tk__section cv-sec cv-sec--experience">
       <h2 class="tk__h" :style="{ color: v.accent }">{{ v.t.experience }}</h2>
       <article v-for="e in v.experience" :key="e.id" class="tk__entry cv-keep">
         <div class="tk__row">
@@ -24,7 +24,7 @@
       </article>
     </section>
 
-    <section v-if="v.education.length" class="tk__section">
+    <section v-if="v.education.length" class="tk__section cv-sec cv-sec--education">
       <h2 class="tk__h" :style="{ color: v.accent }">{{ v.t.education }}</h2>
       <article v-for="e in v.education" :key="e.id" class="tk__entry cv-keep">
         <div class="tk__row">
@@ -35,7 +35,7 @@
       </article>
     </section>
 
-    <section v-if="v.skills.length || v.languages.length || v.certifications.length" class="tk__section cv-keep">
+    <section v-if="v.skills.length || v.languages.length || v.certifications.length" class="tk__section cv-keep cv-sec cv-sec--skills">
       <h2 class="tk__h" :style="{ color: v.accent }">{{ v.t.skills }} &amp; {{ v.t.languages }}</h2>
       <p v-if="v.skills.length" class="tk__line"><strong>{{ v.t.skills }}:</strong> {{ v.skills.join(', ') }}</p>
       <p v-if="v.languages.length" class="tk__line">

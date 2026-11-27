@@ -11,12 +11,12 @@
 
     <div class="tn__cols">
       <main class="tn__main">
-        <section v-if="v.summary" class="tn__section">
+        <section v-if="v.summary" class="tn__section cv-sec cv-sec--summary">
           <h2 class="tn__heading" :style="{ color: v.accent }">{{ v.t.profile }}</h2>
           <CvRichText :text="v.summary" :dot="v.accent" />
         </section>
 
-        <section v-if="v.experience.length" class="tn__section">
+        <section v-if="v.experience.length" class="tn__section cv-sec cv-sec--experience">
           <h2 class="tn__heading" :style="{ color: v.accent }">{{ v.t.experience }}</h2>
           <article v-for="e in v.experience" :key="e.id" class="tn__entry cv-keep">
             <p class="tn__date">{{ e.dates }}<span v-if="e.location"> · {{ e.location }}</span></p>
@@ -26,7 +26,7 @@
           </article>
         </section>
 
-        <section v-if="v.education.length" class="tn__section">
+        <section v-if="v.education.length" class="tn__section cv-sec cv-sec--education">
           <h2 class="tn__heading" :style="{ color: v.accent }">{{ v.t.education }}</h2>
           <article v-for="e in v.education" :key="e.id" class="tn__entry cv-keep">
             <p class="tn__date">{{ e.dates }}<span v-if="e.location"> · {{ e.location }}</span></p>
@@ -47,21 +47,21 @@
           </p>
         </section>
 
-        <section v-if="v.skills.length" class="tn__section">
+        <section v-if="v.skills.length" class="tn__section cv-sec cv-sec--skills">
           <h2 class="tn__heading" :style="{ color: v.accent }">{{ v.t.skills }}</h2>
           <div class="tn__chips">
             <span v-for="s in v.skills" :key="s" class="tn__chip" :style="{ borderColor: v.accentLine }">{{ s }}</span>
           </div>
         </section>
 
-        <section v-if="v.languages.length" class="tn__section">
+        <section v-if="v.languages.length" class="tn__section cv-sec cv-sec--languages">
           <h2 class="tn__heading" :style="{ color: v.accent }">{{ v.t.languages }}</h2>
           <p v-for="l in v.languages" :key="l.id" class="tn__item">
             <strong>{{ l.name }}</strong><span v-if="l.level" class="tn__muted">{{ l.level }}</span>
           </p>
         </section>
 
-        <section v-if="v.certifications.length" class="tn__section">
+        <section v-if="v.certifications.length" class="tn__section cv-sec cv-sec--certifications">
           <h2 class="tn__heading" :style="{ color: v.accent }">{{ v.t.certifications }}</h2>
           <p v-for="c in v.certifications" :key="c.id" class="tn__item cv-keep">
             <strong>{{ c.name }}</strong>

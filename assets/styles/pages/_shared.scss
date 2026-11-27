@@ -163,6 +163,11 @@
     color: var(--muted);
   }
 
+  &__optional {
+    font-weight: 400;
+    color: var(--muted);
+  }
+
   &--full {
     grid-column: 1 / -1;
   }

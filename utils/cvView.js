@@ -47,6 +47,14 @@ export const cvTemplateCategories = [
   { id: 'ats', name: 'ATS-friendly' }
 ]
 
+// Order of the CV sections. Contact details and the name/title header always stay on top.
+export const DEFAULT_SECTION_ORDER = ['summary', 'experience', 'education', 'skills', 'languages', 'certifications']
+
+export function normalizeSectionOrder(order) {
+  const valid = (Array.isArray(order) ? order : []).filter((k, i, a) => DEFAULT_SECTION_ORDER.includes(k) && a.indexOf(k) === i)
+  return [...valid, ...DEFAULT_SECTION_ORDER.filter((k) => !valid.includes(k))]
+}
+
 export const cvAccents = ['#3943B7', '#0F766E', '#B42318', '#C2410C', '#7C3AED', '#1F2937', '#0369A1', '#A16207']
 
 export function hexToRgba(hex, alpha) {
@@ -98,6 +106,7 @@ export function buildCvView(cv) {
     accentLight: shadeHex(cv.meta.accent, 0.35),
     initials: (p.fullName || 'Your Name').split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join(''),
     font: (cvFonts[cv.meta.font] || cvFonts[DEFAULT_CV_FONT]).stack,
+    sectionOrder: normalizeSectionOrder(cv.meta.sectionOrder),
     summary: cv.summary.trim(),
     contact: [
       p.email && { icon: 'mail', text: p.email },

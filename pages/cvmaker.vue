@@ -83,7 +83,7 @@
               <input v-model="cv.personal.fullName" class="input" placeholder="Ana Horvat" autocomplete="name" />
             </label>
             <label class="field">
-              <span class="field__label">Professional title</span>
+              <span class="field__label">Professional title <span class="field__optional">(optional)</span></span>
               <input
                 ref="titleBox"
                 v-model="cv.personal.title"
@@ -113,25 +113,25 @@
               <input v-model="cv.personal.email" class="input" type="email" placeholder="ana@example.com" autocomplete="email" />
             </label>
             <label class="field">
-              <span class="field__label">Phone</span>
+              <span class="field__label">Phone <span class="field__optional">(optional)</span></span>
               <input v-model="cv.personal.phone" class="input" type="tel" placeholder="+385 91 234 5678" autocomplete="tel" />
             </label>
             <label class="field">
-              <span class="field__label">Location</span>
+              <span class="field__label">Location <span class="field__optional">(optional)</span></span>
               <input v-model="cv.personal.location" class="input" placeholder="Zagreb, Croatia" />
             </label>
             <label class="field">
-              <span class="field__label">Website</span>
+              <span class="field__label">Website <span class="field__optional">(optional)</span></span>
               <input v-model="cv.personal.website" class="input" placeholder="anahorvat.dev" />
             </label>
             <label class="field field--full">
-              <span class="field__label">LinkedIn</span>
+              <span class="field__label">LinkedIn <span class="field__optional">(optional)</span></span>
               <input v-model="cv.personal.linkedin" class="input" placeholder="linkedin.com/in/anahorvat" />
             </label>
           </div>
         </EditorSection>
 
-        <EditorSection title="Profile" subtitle="A short summary of who you are" icon="text">
+        <EditorSection title="Profile" :style="{ order: sectionRank.summary }" subtitle="A short summary of who you are" icon="text">
           <label class="field">
             <textarea
               v-model="cv.summary"
@@ -176,7 +176,7 @@
           </Transition>
         </EditorSection>
 
-        <EditorSection title="Experience" subtitle="Jobs, internships, projects" icon="briefcase" :count="cv.experience.length">
+        <EditorSection title="Experience" :style="{ order: sectionRank.experience }" subtitle="Jobs, internships, projects" icon="briefcase" :count="cv.experience.length">
           <EditorEntryList
             list-key="experience"
             noun="position"
@@ -187,7 +187,7 @@
           />
         </EditorSection>
 
-        <EditorSection title="Education" subtitle="Schools, degrees, courses" icon="cap" :count="cv.education.length">
+        <EditorSection title="Education" :style="{ order: sectionRank.education }" subtitle="Schools, degrees, courses" icon="cap" :count="cv.education.length">
           <EditorEntryList
             list-key="education"
             noun="education"
@@ -199,7 +199,7 @@
           />
         </EditorSection>
 
-        <EditorSection title="Skills" subtitle="Type to search, or pick from suggestions" icon="spark" :count="cv.skills.length">
+        <EditorSection title="Skills" :style="{ order: sectionRank.skills }" subtitle="Type to search, or pick from suggestions" icon="spark" :count="cv.skills.length">
           <EditorTagInput
             v-model="cv.skills"
             :source="skillSource"
@@ -209,11 +209,11 @@
           <EditorSkillSuggestions />
         </EditorSection>
 
-        <EditorSection title="Languages" icon="globe" :count="cv.languages.length">
+        <EditorSection title="Languages" :style="{ order: sectionRank.languages }" icon="globe" :count="cv.languages.length">
           <EditorLanguageRows />
         </EditorSection>
 
-        <EditorSection title="Certifications" subtitle="Certificates, courses, awards" icon="award" :count="cv.certifications.length">
+        <EditorSection title="Certifications" :style="{ order: sectionRank.certifications }" subtitle="Certificates, courses, awards" icon="award" :count="cv.certifications.length">
           <div class="rows">
             <div v-for="(c, i) in cv.certifications" :key="c.id" class="rows__row rows__row--cert">
               <input v-model="c.name" class="input" placeholder="Name" aria-label="Certification name" />
@@ -229,7 +229,7 @@
           </div>
         </EditorSection>
 
-        <div class="editor__footer">
+        <div class="editor__footer" style="order: 20">
           <button type="button" class="btn btn--danger btn--sm" @click="resetOpen = true">
             <AppIcon name="refresh" :size="15" /> Start over
           </button>
@@ -271,6 +271,7 @@
           </div>
 
           <div class="toolbar__group">
+            <SectionOrder />
             <FontPicker v-model="cv.meta.font" />
             <div class="segmented segmented--sm" role="radiogroup" aria-label="CV language">
               <button type="button" :class="{ 'is-active': cv.meta.language === 'en' }" @click="cv.meta.language = 'en'">EN</button>
@@ -377,6 +378,11 @@ function pickTemplate(id) {
   cv.value.meta.template = id
   galleryOpen.value = false
 }
+/* ---------- section order (the form follows the CV) */
+const sectionRank = computed(() =>
+  Object.fromEntries(normalizeSectionOrder(cv.value.meta.sectionOrder).map((k, i) => [k, i + 1]))
+)
+
 /* ---------- suggestions: employment type, education level, skills, summary */
 const cvLang = computed(() => (cv.value.meta.language === 'hr' ? 'hr' : 'en'))
 const typeOptions = computed(() => experienceTypes.map((t) => ({ value: t.id, label: t[cvLang.value] })))

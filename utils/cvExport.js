@@ -30,16 +30,23 @@ export async function exportPdf(element, liveCv) {
   if (document.fonts?.ready) await document.fonts.ready
 
   const html2pdf = (await import('html2pdf.js')).default
-  const rendered = await html2pdf()
-    .set({
-      margin: 0,
-      image: { type: 'jpeg', quality: 0.97 },
-      html2canvas: { scale: 2.5, useCORS: true, backgroundColor: '#ffffff', logging: false },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
-      pagebreak: { mode: ['css'], avoid: ['.cv-keep'] }
-    })
-    .from(element)
-    .outputPdf('arraybuffer')
+  // Placeholders ("Your Name", an empty title) never end up in the PDF.
+  element.dataset.exporting = ''
+  let rendered
+  try {
+    rendered = await html2pdf()
+      .set({
+        margin: 0,
+        image: { type: 'jpeg', quality: 0.97 },
+        html2canvas: { scale: 2.5, useCORS: true, backgroundColor: '#ffffff', logging: false },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait', compress: true },
+        pagebreak: { mode: ['css'], avoid: ['.cv-keep'] }
+      })
+      .from(element)
+      .outputPdf('arraybuffer')
+  } finally {
+    delete element.dataset.exporting
+  }
 
   const { PDFDocument } = await import('pdf-lib')
   const doc = await PDFDocument.load(rendered)

@@ -14,12 +14,12 @@
       <div class="ts__contact"><span v-for="c in v.contact" :key="c.icon">{{ c.text }}</span></div>
     </div>
 
-    <div v-if="v.summary" class="ts__row">
+    <div v-if="v.summary" class="ts__row cv-sec cv-sec--summary">
       <h2 class="ts__label" :style="{ color: v.accent }">{{ v.t.profile }}</h2>
       <div class="ts__lead"><CvRichText :text="v.summary" :dot="v.accent" /></div>
     </div>
 
-    <div v-if="v.experience.length" class="ts__row">
+    <div v-if="v.experience.length" class="ts__row cv-sec cv-sec--experience">
       <h2 class="ts__label" :style="{ color: v.accent }">{{ v.t.experience }}</h2>
       <div>
         <article v-for="e in v.experience" :key="e.id" class="ts__entry cv-keep">
@@ -31,7 +31,7 @@
       </div>
     </div>
 
-    <div v-if="v.education.length" class="ts__row">
+    <div v-if="v.education.length" class="ts__row cv-sec cv-sec--education">
       <h2 class="ts__label" :style="{ color: v.accent }">{{ v.t.education }}</h2>
       <div>
         <article v-for="e in v.education" :key="e.id" class="ts__entry cv-keep">
@@ -42,17 +42,17 @@
       </div>
     </div>
 
-    <div v-if="v.skills.length" class="ts__row cv-keep">
+    <div v-if="v.skills.length" class="ts__row cv-keep cv-sec cv-sec--skills">
       <h2 class="ts__label" :style="{ color: v.accent }">{{ v.t.skills }}</h2>
       <div class="ts__cols3"><span v-for="s in v.skills" :key="s">{{ s }}</span></div>
     </div>
 
-    <div v-if="v.languages.length" class="ts__row cv-keep">
+    <div v-if="v.languages.length" class="ts__row cv-keep cv-sec cv-sec--languages">
       <h2 class="ts__label" :style="{ color: v.accent }">{{ v.t.languages }}</h2>
       <div class="ts__cols3"><span v-for="l in v.languages" :key="l.id"><strong>{{ l.name }}</strong> {{ l.level }}</span></div>
     </div>
 
-    <div v-if="v.certifications.length" class="ts__row cv-keep">
+    <div v-if="v.certifications.length" class="ts__row cv-keep cv-sec cv-sec--certifications">
       <h2 class="ts__label" :style="{ color: v.accent }">{{ v.t.certifications }}</h2>
       <div>
         <p v-for="c in v.certifications" :key="c.id" class="ts__cert"><strong>{{ c.name }}</strong> {{ [c.issuer, c.date].filter(Boolean).join(', ') }}</p>

@@ -14,7 +14,7 @@
         </p>
       </section>
 
-      <section v-if="v.languages.length" class="ti__block">
+      <section v-if="v.languages.length" class="ti__block cv-sec cv-sec--languages">
         <h3 class="ti__sh"><span :style="{ background: v.accent }" />{{ v.t.languages }}</h3>
         <div v-for="l in v.languages" :key="l.id" class="ti__lang">
           <span>{{ l.name }}</span>
@@ -23,7 +23,7 @@
         </div>
       </section>
 
-      <section v-if="v.skills.length" class="ti__block">
+      <section v-if="v.skills.length" class="ti__block cv-sec cv-sec--skills">
         <h3 class="ti__sh"><span :style="{ background: v.accent }" />{{ v.t.skills }}</h3>
         <div class="ti__chips"><span v-for="s in v.skills" :key="s">{{ s }}</span></div>
       </section>
@@ -36,12 +36,12 @@
         <p class="ti__title" :style="{ color: v.accent }" :class="{ 'is-placeholder': !v.p.title }">{{ v.p.title || 'Professional title' }}</p>
       </header>
 
-      <section v-if="v.summary" class="ti__section">
+      <section v-if="v.summary" class="ti__section cv-sec cv-sec--summary">
         <h2 class="ti__h"><span class="ti__hic" :style="{ background: v.accent }"><AppIcon name="user" :size="14" color="#ffffff" :stroke="2.2" /></span>{{ v.t.profile }}</h2>
         <CvRichText :text="v.summary" :dot="v.accent" />
       </section>
 
-      <section v-if="v.experience.length" class="ti__section">
+      <section v-if="v.experience.length" class="ti__section cv-sec cv-sec--experience">
         <h2 class="ti__h"><span class="ti__hic" :style="{ background: v.accent }"><AppIcon name="briefcase" :size="14" color="#ffffff" :stroke="2.2" /></span>{{ v.t.experience }}</h2>
         <article v-for="e in v.experience" :key="e.id" class="ti__entry cv-keep">
           <i class="ti__node" :style="{ borderColor: v.accent }" />
@@ -52,7 +52,7 @@
         </article>
       </section>
 
-      <section v-if="v.education.length" class="ti__section">
+      <section v-if="v.education.length" class="ti__section cv-sec cv-sec--education">
         <h2 class="ti__h"><span class="ti__hic" :style="{ background: v.accent }"><AppIcon name="cap" :size="14" color="#ffffff" :stroke="2.2" /></span>{{ v.t.education }}</h2>
         <article v-for="e in v.education" :key="e.id" class="ti__entry cv-keep">
           <i class="ti__node" :style="{ borderColor: v.accent }" />
@@ -63,7 +63,7 @@
         </article>
       </section>
 
-      <section v-if="v.certifications.length" class="ti__section">
+      <section v-if="v.certifications.length" class="ti__section cv-sec cv-sec--certifications">
         <h2 class="ti__h"><span class="ti__hic" :style="{ background: v.accent }"><AppIcon name="award" :size="14" color="#ffffff" :stroke="2.2" /></span>{{ v.t.certifications }}</h2>
         <div class="ti__certs">
           <p v-for="c in v.certifications" :key="c.id" class="ti__cert cv-keep" :style="{ borderColor: v.accentLine }">

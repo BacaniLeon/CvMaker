@@ -15,11 +15,11 @@
 
     <div class="tx__body">
       <main class="tx__main">
-        <section v-if="v.summary" class="tx__section">
+        <section v-if="v.summary" class="tx__section cv-sec cv-sec--summary">
           <h2 class="tx__h" :style="{ color: v.accentDark }">{{ v.t.profile }}</h2>
           <CvRichText :text="v.summary" :dot="v.accent" />
         </section>
-        <section v-if="v.experience.length" class="tx__section">
+        <section v-if="v.experience.length" class="tx__section cv-sec cv-sec--experience">
           <h2 class="tx__h" :style="{ color: v.accentDark }">{{ v.t.experience }}</h2>
           <article v-for="e in v.experience" :key="e.id" class="tx__entry cv-keep">
             <div class="tx__row">
@@ -30,7 +30,7 @@
             <CvRichText :text="e.description" :dot="v.accent" />
           </article>
         </section>
-        <section v-if="v.education.length" class="tx__section">
+        <section v-if="v.education.length" class="tx__section cv-sec cv-sec--education">
           <h2 class="tx__h" :style="{ color: v.accentDark }">{{ v.t.education }}</h2>
           <article v-for="e in v.education" :key="e.id" class="tx__entry cv-keep">
             <div class="tx__row">
@@ -45,17 +45,17 @@
       </main>
 
       <aside class="tx__side">
-        <section v-if="v.skills.length" class="tx__section">
+        <section v-if="v.skills.length" class="tx__section cv-sec cv-sec--skills">
           <h2 class="tx__h tx__h--side" :style="{ color: v.accentDark }">{{ v.t.skills }}</h2>
           <ul class="tx__list">
             <li v-for="s in v.skills" :key="s"><i :style="{ background: v.accent }" />{{ s }}</li>
           </ul>
         </section>
-        <section v-if="v.languages.length" class="tx__section">
+        <section v-if="v.languages.length" class="tx__section cv-sec cv-sec--languages">
           <h2 class="tx__h tx__h--side" :style="{ color: v.accentDark }">{{ v.t.languages }}</h2>
           <p v-for="l in v.languages" :key="l.id" class="tx__item"><strong>{{ l.name }}</strong><span>{{ l.level }}</span></p>
         </section>
-        <section v-if="v.certifications.length" class="tx__section">
+        <section v-if="v.certifications.length" class="tx__section cv-sec cv-sec--certifications">
           <h2 class="tx__h tx__h--side" :style="{ color: v.accentDark }">{{ v.t.certifications }}</h2>
           <p v-for="c in v.certifications" :key="c.id" class="tx__item cv-keep">
             <strong>{{ c.name }}</strong><span>{{ [c.issuer, c.date].filter(Boolean).join(' · ') }}</span>
